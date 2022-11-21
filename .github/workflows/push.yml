@@ -1,7 +1,8 @@
 name: push
 on:  # yamllint disable-line rule:truthy
   push:
-    - branches
+    branches:
+      - "**"
 
 jobs:
   validate:
