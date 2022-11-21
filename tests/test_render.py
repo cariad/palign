@@ -61,5 +61,5 @@ def test_characters(
 ) -> None:
     image = Image.new("RGB", (1600, 900))
     draw = ImageDraw.Draw(image)
-    render = Render(draw, font, tracking)
+    render = Render(draw, font=font, tracking=tracking)
     assert list(render.characters(text)) == expect
