@@ -1,7 +1,8 @@
 name: release
 on:  # yamllint disable-line rule:truthy
   release:
-    types: [released]
+    types:
+      - released
 
 jobs:
   validate:
