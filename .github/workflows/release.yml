@@ -1,5 +1,8 @@
 name: release
-on: [release]  # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
+  release:
+    types: [released]
+
 jobs:
   validate:
     runs-on: ubuntu-latest
