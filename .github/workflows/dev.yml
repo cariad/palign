@@ -17,3 +17,6 @@ jobs:
           runCmd: >
             pip install --upgrade --user -r requirements.dev.txt &&
             ./validate.sh
+
+      - name: Publish code coverage
+        uses: codecov/codecov-action@v3.1.1
