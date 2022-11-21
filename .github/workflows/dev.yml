@@ -14,6 +14,7 @@ jobs:
       - name: Validate
         uses: devcontainers/ci@v0.2
         with:
+          push: never
           runCmd: >
             pip install --upgrade --user -r requirements.dev.txt &&
             ./validate.sh
