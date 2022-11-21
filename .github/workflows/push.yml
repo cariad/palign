@@ -17,7 +17,8 @@ jobs:
           push: never
           runCmd: >
             pip install --upgrade --user -r requirements.dev.txt &&
-            ./validate.sh
+            ./validate.sh &&
+            ./build.sh ${{ github.ref_name }}
 
       - name: Publish code coverage
         uses: codecov/codecov-action@v3.1.1
