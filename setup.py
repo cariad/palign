@@ -35,6 +35,9 @@ setup(
     classifiers=classifiers,
     description="Pillow text alignment helper",
     include_package_data=True,
+    install_requires=[
+        "pillow~=9.3",
+    ],
     license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
