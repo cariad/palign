@@ -24,3 +24,4 @@ mypy palign
 mypy tests
 
 pytest -vv
+coverage xml
