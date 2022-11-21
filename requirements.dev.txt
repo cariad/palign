@@ -1,0 +1,4 @@
+isort~=5.10
+pip~=22.3
+shellcheck-py~=0.8
+yamllint~=1.28
