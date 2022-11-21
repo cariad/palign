@@ -1,0 +1,21 @@
+name: release
+on: [release]  # yamllint disable-line rule:truthy
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.5.0
+
+      - name: Validate
+        uses: devcontainers/ci@v0.2
+        with:
+          push: never
+          runCmd: >
+            pip install --upgrade --user -r requirements.dev.txt &&
+            ./build.sh
+
+      - name: pypi-publish
+        uses: pypa/gh-action-pypi-publish@v1.5.1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
