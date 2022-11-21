@@ -1,0 +1,13 @@
+name: development
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: devcontainers/ci@v0.2
+        with:
+          runCmd: ./validate.sh
