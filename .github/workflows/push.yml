@@ -1,9 +1,5 @@
-name: development
-on:  # yamllint disable-line rule:truthy
-  push:
-    branches-ignore:
-      - main
-
+name: push
+on: [push]  # yamllint disable-line rule:truthy
 jobs:
   validate:
     runs-on: ubuntu-latest
