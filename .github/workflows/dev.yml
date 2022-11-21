@@ -5,9 +5,13 @@ on:  # yamllint disable-line rule:truthy
       - main
 
 jobs:
-  test:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: devcontainers/ci@v0.2
+      - name: Checkout
+        uses: actions/checkout@v2.5.0
+
+      - name: Validate
+        uses: devcontainers/ci@v0.2
         with:
           runCmd: ./validate.sh
