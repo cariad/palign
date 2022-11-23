@@ -13,12 +13,12 @@ class Character:
     Character.
     """
 
-    x: int  # pylint: disable=invalid-name
+    x: int
     """
     X pixel coordinate.
     """
 
-    y: int  # pylint: disable=invalid-name
+    y: int
     """
     Y pixel coordinate.
     """

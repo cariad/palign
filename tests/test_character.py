@@ -1,5 +1,3 @@
-# pylint: disable=missing-function-docstring
-
 from palign import Character
 
 
