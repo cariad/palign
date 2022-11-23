@@ -1,5 +1,3 @@
-# pylint: disable=missing-function-docstring
-
 from PIL.ImageFont import FreeTypeFont, truetype
 from pytest import fixture
 

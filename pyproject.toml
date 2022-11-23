@@ -1,8 +1,12 @@
 [tool.isort]
 profile = "black"
 
-[tool.pylint.'MESSAGES CONTROL']
-disable = "missing-module-docstring"
+[tool.pylint.messages_control]
+disable = """
+invalid-name,
+missing-function-docstring,
+missing-module-docstring,
+"""
 
 [tool.pytest.ini_options]
 addopts = "--cov=palign --cov-branch --cov-report=html --cov-report=term-missing:skip-covered --cov-report=xml --no-cov-on-fail"

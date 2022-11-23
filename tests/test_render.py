@@ -1,5 +1,3 @@
-# pylint: disable=missing-function-docstring
-
 from typing import List
 
 from PIL import Image, ImageDraw

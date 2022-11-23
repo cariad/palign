@@ -46,19 +46,17 @@ class Render:
             Render coordinates of each character.
         """
 
-        x: float = 0  # pylint: disable=invalid-name
-        y: float = 0  # pylint: disable=invalid-name
+        x: float = 0
+        y: float = 0
 
         for index, char in enumerate(text):
             if index > 0:
-                x += self.tracking  # pylint: disable=invalid-name
+                x += self.tracking
 
             yield Character(char, int(x), int(y))
 
-            # pylint: disable=invalid-name
             x += self._draw.textlength(char, self._font)
 
-    # pylint: disable=invalid-name
     def text(self, text: str, x: int, y: int) -> None:
         """
         Renders a string of text.

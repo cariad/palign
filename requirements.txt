@@ -1,1 +1,2 @@
+nvalues==1.0.0b3
 pillow~=9.3
