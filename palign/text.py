@@ -1,40 +1,39 @@
 from typing import Iterator, List
 
-from palign.character import Character
 from palign.style import Style
-from palign.types import GetTextSize
+from palign.text_line import TextLine
+from palign.types import GetTextLength
 
 
 class Text:
-    def __init__(self, text: str, style: Style, get_size: GetTextSize) -> None:
-        self._width: float = 0
-        self._height: float = 0
+    def __init__(
+        self,
+        text: str,
+        style: Style,
+        get_length: GetTextLength,
+    ) -> None:
 
-        if style.font:
-            self._height = style.font.size
+        curr_line = TextLine(style, get_length)
+        self._lines: List[TextLine] = [curr_line]
 
-        y: float = 0
+        self._height = 0
 
-        self._characters: List[Character] = []
+        for char in text:
+            if char == "\n":
+                curr_line = TextLine(style, get_length)
+                self._lines.append(curr_line)
+            else:
+                curr_line.append(char)
 
-        for index, char in enumerate(text):
-            if index > 0:
-                self._width += style.tracking
+        if not style.font:
+            raise ValueError("Text requires font")
 
-            self._characters.append(Character(char, self._width, y))
-            (width, height) = get_size(char, style.font)
-            self._width += width
-            if not style.font:
-                self._height = max(self._height, height)
+        self._height = style.font.size * len(self._lines)
 
-    def __iter__(self) -> Iterator[Character]:
-        for character in self._characters:
-            yield character
+    def __iter__(self) -> Iterator[TextLine]:
+        for line in self._lines:
+            yield line
 
     @property
     def height(self) -> float:
         return self._height
-
-    @property
-    def width(self) -> float:
-        return self._width

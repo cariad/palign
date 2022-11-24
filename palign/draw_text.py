@@ -1,7 +1,6 @@
 from typing import Optional
 
 from PIL.ImageDraw import ImageDraw
-from PIL.ImageFont import FreeTypeFont
 
 from palign.enums import Horizontal, Vertical
 from palign.style import Style
@@ -19,41 +18,47 @@ def draw_text(
         draw.rectangle(bounds, fill=style.background)
 
     if text:
+        if not style.font:
+            raise ValueError("draw_text requires a font")
 
-        def get_text_size(
-            measure: str,
-            font: Optional[FreeTypeFont],
-        ) -> tuple[float, float]:
-            b = draw.textbbox((0, 0), measure, font=font)
-            return (b[2] - b[0], b[3] - b[1])
+        line_height = style.font.size
 
-        t = Text(text, style, get_text_size)
+        t = Text(text, style, draw.textlength)
 
-        bounds_width = bounds[2] - bounds[0]
-        bounds_height = bounds[3] - bounds[1]
+        top = bounds[1]
 
-        match style.horizontal:
-            case Horizontal.Center:
-                origin_x = bounds[0] + (bounds_width / 2) - (t.width / 2)
-            case Horizontal.Right:
-                origin_x = bounds[0] + bounds_width - t.width
-            case _:
-                origin_x = bounds[0]
+        width = bounds[2] - bounds[0]
+        height = bounds[3] - top
 
-        match style.vertical:
-            case Vertical.Center:
-                origin_y = bounds[1] + (bounds_height / 2) - (t.height / 2)
-            case Vertical.Bottom:
-                origin_y = bounds[1] + bounds_height - t.height
-            case _:
-                origin_y = bounds[1]
+        for index, line in enumerate(t):
 
-        origin = (origin_x, origin_y)
+            match style.horizontal:
+                case Horizontal.Center:
+                    origin_x = bounds[0] + (width / 2) - (line.width / 2)
+                case Horizontal.Right:
+                    origin_x = bounds[0] + width - line.width
+                case _:
+                    origin_x = bounds[0]
 
-        for char in t:
-            draw.text(
-                char.pillow_coords(origin),
-                char.character,
-                fill=style.color,
-                font=style.font,
-            )
+            match style.vertical:
+                case Vertical.Center:
+                    origin_y = (
+                        top
+                        + (height / 2)
+                        - (t.height / 2)
+                        + (line_height * index)
+                    )
+                case Vertical.Bottom:
+                    origin_y = top + height - t.height + (line_height * index)
+                case _:
+                    origin_y = top + (line_height * index)
+
+            for char in line:
+                render_x = char.x + origin_x
+                render_y = origin_y
+                draw.text(
+                    (render_x, render_y),
+                    char.character,
+                    fill=style.color,
+                    font=style.font,
+                )

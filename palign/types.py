@@ -12,4 +12,4 @@ Color = Union[
     Tuple[int, int, int, int],
 ]
 
-GetTextSize = Callable[[str, Optional[FreeTypeFont]], tuple[float, float]]
+GetTextLength = Callable[[str, Optional[FreeTypeFont]], float]
