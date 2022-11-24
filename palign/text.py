@@ -2,16 +2,23 @@ from typing import Iterator, List
 
 from palign.character import Character
 from palign.style import Style
-from palign.types import GetTextSize
+from palign.types import GetTextLength
 
 
 class Text:
-    def __init__(self, text: str, style: Style, get_size: GetTextSize) -> None:
+    def __init__(
+        self,
+        text: str,
+        style: Style,
+        get_length: GetTextLength,
+    ) -> None:
         self._width: float = 0
         self._height: float = 0
 
-        if style.font:
-            self._height = style.font.size
+        if not style.font:
+            raise ValueError("Text requires a font")
+
+        self._height = style.font.size
 
         y: float = 0
 
@@ -22,10 +29,7 @@ class Text:
                 self._width += style.tracking
 
             self._characters.append(Character(char, self._width, y))
-            (width, height) = get_size(char, style.font)
-            self._width += width
-            if not style.font:
-                self._height = max(self._height, height)
+            self._width += get_length(char, style.font)
 
     def __iter__(self) -> Iterator[Character]:
         for character in self._characters:

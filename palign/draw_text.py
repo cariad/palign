@@ -1,7 +1,6 @@
 from typing import Optional
 
 from PIL.ImageDraw import ImageDraw
-from PIL.ImageFont import FreeTypeFont
 
 from palign.enums import Horizontal, Vertical
 from palign.style import Style
@@ -19,15 +18,7 @@ def draw_text(
         draw.rectangle(bounds, fill=style.background)
 
     if text:
-
-        def get_text_size(
-            measure: str,
-            font: Optional[FreeTypeFont],
-        ) -> tuple[float, float]:
-            b = draw.textbbox((0, 0), measure, font=font)
-            return (b[2] - b[0], b[3] - b[1])
-
-        t = Text(text, style, get_text_size)
+        t = Text(text, style, draw.textlength)
 
         bounds_width = bounds[2] - bounds[0]
         bounds_height = bounds[3] - bounds[1]
