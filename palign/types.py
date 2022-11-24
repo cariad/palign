@@ -1,4 +1,6 @@
-from typing import Tuple, Union
+from typing import Callable, Optional, Tuple, Union
+
+from PIL.ImageFont import FreeTypeFont
 
 Bounds = Tuple[float, float, float, float]
 """
@@ -9,3 +11,5 @@ Color = Union[
     Tuple[int, int, int],
     Tuple[int, int, int, int],
 ]
+
+GetTextSize = Callable[[str, Optional[FreeTypeFont]], tuple[float, float]]

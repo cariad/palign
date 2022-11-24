@@ -3,7 +3,9 @@ from typing import Optional
 from nvalues import Volume
 from PIL.ImageDraw import ImageDraw
 
-from palign.cell_style import CellStyle
+from palign.cell import Cell
+from palign.draw_text import draw_text
+from palign.style import Style
 from palign.types import Bounds
 
 
@@ -16,13 +18,38 @@ class Grid:
         self,
         columns: int,
         rows: int,
-        cell_style: Optional[CellStyle] = None,
+        cell_style: Optional[Style] = None,
     ) -> None:
+        def validate_key(key: tuple[int, int]) -> None:
+            x = key[0]
+            if x < 0 or x >= columns:
+                raise ValueError(f"No column {x} (grid has {columns})")
+
+            y = key[1]
+            if y < 0 or y >= rows:
+                raise ValueError(f"No row {y} (grid has {rows})")
+
         self._columns = columns
         self._rows = rows
 
-        cell_style = cell_style or CellStyle()
-        self._styles = Volume[tuple[int, int], CellStyle](cell_style)
+        def make_cell(_: tuple[int, int]) -> Cell:
+            return Cell(style=Style())
+
+        self._cells = Volume[tuple[int, int], Cell](
+            default_maker=make_cell,
+            key_validator=validate_key,
+        )
+
+        self._default_style = cell_style
+
+    def __delitem__(self, key: tuple[int, int]) -> None:
+        del self._cells[key]
+
+    def __getitem__(self, key: tuple[int, int]) -> Cell:
+        return self._cells[key]
+
+    def __setitem__(self, key: tuple[int, int], value: Cell) -> None:
+        self._cells[key] = value
 
     def _cell_bounds(
         self,
@@ -38,13 +65,6 @@ class Grid:
         left = grid_left + (column * column_width)
         top = grid_top + (row * row_height)
         return (left, top, left + column_width, top + row_height)
-
-    def delete_style(self, column: int, row: int) -> None:
-        """
-        Deletes a cell's style.
-        """
-
-        del self._styles[column, row]
 
     def render(
         self,
@@ -68,12 +88,5 @@ class Grid:
                     width,
                     height,
                 )
-                cell_style = self._styles[x, y]
-                cell_style.render(draw, bounds)
-
-    def set_style(self, column: int, row: int, style: CellStyle) -> None:
-        """
-        Sets a cell's style.
-        """
-
-        self._styles[column, row] = style
+                cell = self[x, y]
+                draw_text(cell.text, draw, cell.style, bounds)

@@ -4,18 +4,18 @@ Palign provides functions for aligning text to be rendered via Pillow.
 
 from importlib.resources import files
 
-from palign.cell_style import CellStyle
 from palign.character import Character
+from palign.draw_text import draw_text
 from palign.grid import Grid
-from palign.render import Render
+from palign.style import Style
 
 with files(__package__).joinpath("VERSION").open("r") as t:
     version = t.readline().strip()
 
 __all__ = [
-    "CellStyle",
+    "Style",
     "Character",
     "Grid",
-    "Render",
+    "draw_text",
     "version",
 ]
