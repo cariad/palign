@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from PIL.ImageFont import FreeTypeFont
 
-from palign import Grid, Render
+from palign import CellStyle, Grid, Render
 
 
 def test_demo(font: FreeTypeFont) -> None:
@@ -25,12 +25,14 @@ def test_demo(font: FreeTypeFont) -> None:
     def color_bit(column: int) -> int:
         return 155 + int((100 / column_count) * column)
 
-    for column in range(column_count):
-        for row in range(row_count):
-            red = color_bit(column) if row == 0 else 255
-            green = color_bit(column) if row == 1 else 255
-            blue = color_bit(column) if row == 2 else 255
-            grid.background(column, row, (red, green, blue))
+    for x in range(column_count):
+        for y in range(row_count):
+            red = color_bit(x) if y == 0 else 255
+            green = color_bit(x) if y == 1 else 255
+            blue = color_bit(x) if y == 2 else 255
+
+            style = CellStyle(background_color=(red, green, blue))
+            grid.set_style(x, y, style)
 
     grid.render(draw, 400, 10, 1000, 800)
 
