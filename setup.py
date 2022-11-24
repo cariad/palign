@@ -36,7 +36,7 @@ setup(
     description="Pillow text alignment helper",
     include_package_data=True,
     install_requires=[
-        "nvalues==1.0.0b3",
+        "nvalues==1.0.0b4",
         "pillow~=9.3",
     ],
     license="MIT",
