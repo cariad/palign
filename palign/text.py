@@ -1,7 +1,7 @@
 from typing import Iterator, List
 
-from palign.character import Character
 from palign.style import Style
+from palign.text_line import TextLine
 from palign.types import GetTextLength
 
 
@@ -12,33 +12,28 @@ class Text:
         style: Style,
         get_length: GetTextLength,
     ) -> None:
-        self._width: float = 0
-        self._height: float = 0
+
+        curr_line = TextLine(style, get_length)
+        self._lines: List[TextLine] = [curr_line]
+
+        self._height = 0
+
+        for char in text:
+            if char == "\n":
+                curr_line = TextLine(style, get_length)
+                self._lines.append(curr_line)
+            else:
+                curr_line.append(char)
 
         if not style.font:
-            raise ValueError("Text requires a font")
+            raise ValueError("Text requires font")
 
-        self._height = style.font.size
+        self._height = style.font.size * len(self._lines)
 
-        y: float = 0
-
-        self._characters: List[Character] = []
-
-        for index, char in enumerate(text):
-            if index > 0:
-                self._width += style.tracking
-
-            self._characters.append(Character(char, self._width, y))
-            self._width += get_length(char, style.font)
-
-    def __iter__(self) -> Iterator[Character]:
-        for character in self._characters:
-            yield character
+    def __iter__(self) -> Iterator[TextLine]:
+        for line in self._lines:
+            yield line
 
     @property
     def height(self) -> float:
         return self._height
-
-    @property
-    def width(self) -> float:
-        return self._width

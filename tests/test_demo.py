@@ -29,39 +29,39 @@ def test_demo(font_path: str) -> None:
 
     grid = Grid(column_count, row_count)
 
-    grid[0, 0].text = "Top Left"
+    grid[0, 0].text = "Top\nLeft"
     grid[0, 0].style.horizontal = Horizontal.Left
     grid[0, 0].style.vertical = Vertical.Top
 
-    grid[1, 0].text = "Top Center"
+    grid[1, 0].text = "Top\nCenter"
     grid[1, 0].style.horizontal = Horizontal.Center
     grid[1, 0].style.vertical = Vertical.Top
 
-    grid[2, 0].text = "Top Right"
+    grid[2, 0].text = "Top\nRight"
     grid[2, 0].style.horizontal = Horizontal.Right
     grid[2, 0].style.vertical = Vertical.Top
 
-    grid[0, 1].text = "Center Left"
+    grid[0, 1].text = "Center\nLeft"
     grid[0, 1].style.horizontal = Horizontal.Left
     grid[0, 1].style.vertical = Vertical.Center
 
-    grid[1, 1].text = "Center Center"
+    grid[1, 1].text = "Center\nCenter"
     grid[1, 1].style.horizontal = Horizontal.Center
     grid[1, 1].style.vertical = Vertical.Center
 
-    grid[2, 1].text = "Center Right"
+    grid[2, 1].text = "Center\nRight"
     grid[2, 1].style.horizontal = Horizontal.Right
     grid[2, 1].style.vertical = Vertical.Center
 
-    grid[0, 2].text = "Bottom Left"
+    grid[0, 2].text = "Bottom\nLeft"
     grid[0, 2].style.horizontal = Horizontal.Left
     grid[0, 2].style.vertical = Vertical.Bottom
 
-    grid[1, 2].text = "Bottom Center"
+    grid[1, 2].text = "Bottom\nCenter"
     grid[1, 2].style.horizontal = Horizontal.Center
     grid[1, 2].style.vertical = Vertical.Bottom
 
-    grid[2, 2].text = "Bottom Right"
+    grid[2, 2].text = "Bottom\nRight"
     grid[2, 2].style.horizontal = Horizontal.Right
     grid[2, 2].style.vertical = Vertical.Bottom
 

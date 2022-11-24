@@ -7,9 +7,9 @@ find . -name "*.sh" -exec shellcheck -o all --severity style -x {} +
 yamllint --strict .
 
 if [[ "${CI:=}" == "true" ]]; then
-  black . --check --diff
+  black . --check --diff --line-length 79
 else
-  black .
+  black . --line-length 79
 fi
 
 if [[ "${CI:=}" == "true" ]]; then
