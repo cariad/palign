@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Tuple
 
 
 @dataclass
@@ -13,26 +12,25 @@ class Character:
     Character.
     """
 
-    x: int
+    x: float
     """
     X pixel coordinate.
     """
 
-    y: int
+    y: float
     """
     Y pixel coordinate.
     """
 
-    def pillow_coords(self, x_offset: int, y_offset: int) -> Tuple[int, int]:
+    def pillow_coords(
+        self,
+        offset: tuple[float, float],
+    ) -> tuple[float, float]:
         """
         Converts the character's coordinates to Pillow coordinates.
-
-        Args:
-            x_offset: X pixel offset.
-            y_offset: Y pixel offset.
 
         Returns:
             (x, y) render coordinates.
         """
 
-        return (self.x + x_offset, self.y + y_offset)
+        return (self.x + offset[0], self.y + offset[1])
