@@ -1,4 +1,5 @@
 [tool.isort]
+line_length = 79
 profile = "black"
 
 [tool.pylint.messages_control]
