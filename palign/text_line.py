@@ -29,7 +29,7 @@ class TextLine:
     def append(self, text: str) -> None:
         for char in text:
             if self._characters:
-                self._width += self._style.tracking
+                self._width += self._style.tracking or 0
 
             self._characters.append(TextLineCharacter(char, self._width))
             self._width += self._get_length(char, self._style.font)
