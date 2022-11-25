@@ -89,4 +89,10 @@ class Grid:
                     height,
                 )
                 cell = self[x, y]
-                draw_text(cell.text, draw, cell.style, bounds)
+
+                style = (
+                    self._default_style + cell.style
+                    if self._default_style
+                    else cell.style
+                )
+                draw_text(cell.text, draw, style, bounds)

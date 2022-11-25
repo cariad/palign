@@ -27,7 +27,12 @@ def test_demo(font_path: str) -> None:
     column_count = 3
     row_count = 3
 
-    grid = Grid(column_count, row_count)
+    default_style = Style(
+        color=(0, 0, 0),
+        font=small_font,
+    )
+
+    grid = Grid(column_count, row_count, cell_style=default_style)
 
     grid[0, 0].text = "Top\nLeft"
     grid[0, 0].style.horizontal = Horizontal.Left
@@ -73,10 +78,7 @@ def test_demo(font_path: str) -> None:
             red = color_bit(x) if y == 0 else 255
             green = color_bit(x) if y == 1 else 255
             blue = color_bit(x) if y == 2 else 255
-
             grid[x, y].style.background = (red, green, blue)
-            grid[x, y].style.color = (0, 0, 0)
-            grid[x, y].style.font = small_font
 
     grid.render(draw, 400, 10, 800, 300)
 
