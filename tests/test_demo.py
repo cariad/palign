@@ -1,27 +1,42 @@
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Grid, Style, draw_text
-from palign.enums import Horizontal, Vertical
+from palign import (
+    Bounds,
+    Grid,
+    Horizontal,
+    Position,
+    Style,
+    Vertical,
+    draw_text,
+)
 
 
 def test_demo(font_path: str) -> None:
-    image_width = 1240
-    image_height = 350
+    image_margin = 10
+    grid_bounds = Bounds(350, image_margin, 400, 280)
+
+    image_width = int(grid_bounds.right + image_margin)
+    image_height = int(grid_bounds.bottom + image_margin)
 
     image = Image.new("RGB", (image_width, image_height), (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    large_font = truetype(font_path, 42)
+    large_font_size = 36
+    large_font = truetype(font_path, large_font_size)
     small_font = truetype(font_path, 26)
 
+    tracking_style = Style(color=(0, 0, 0), font=large_font)
+
     for index, tracking in enumerate([-5, -2, 0, 2, 5]):
-        style = Style(color=(0, 0, 0), font=large_font, tracking=tracking)
         draw_text(
             f"tracking = {tracking}",
             draw,
-            style,
-            (10, index * 50, -1, -1),
+            tracking_style + Style(tracking=tracking),
+            Position(
+                image_margin,
+                (index * (large_font_size + 10)) + image_margin,
+            ),
         )
 
     column_count = 3
@@ -32,7 +47,7 @@ def test_demo(font_path: str) -> None:
         font=small_font,
     )
 
-    grid = Grid(column_count, row_count, cell_style=default_style)
+    grid = Grid(column_count, row_count, default_style=default_style)
 
     grid[0, 0].text = "Top\nLeft"
     grid[0, 0].style.horizontal = Horizontal.Left
@@ -80,6 +95,6 @@ def test_demo(font_path: str) -> None:
             blue = color_bit(x) if y == 2 else 255
             grid[x, y].style.background = (red, green, blue)
 
-    grid.render(draw, 400, 10, 800, 300)
+    grid.render(draw, grid_bounds)
 
     image.save("demo.png", "png")

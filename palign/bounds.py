@@ -26,6 +26,14 @@ class Bounds(Position):
         self._height = height
 
     @property
+    def bottom(self) -> float:
+        """
+        Bottom-most position in pixels.
+        """
+
+        return self.y + self.height
+
+    @property
     def height(self) -> float:
         """
         Height in pixels.
@@ -34,17 +42,20 @@ class Bounds(Position):
         return self._height
 
     @property
+    def right(self) -> float:
+        """
+        Right-most position in pixels.
+        """
+
+        return self.x + self.width
+
+    @property
     def top_left_bottom_right(self) -> tuple[float, float, float, float]:
         """
         Translates the region to a tuple of coordinates.
         """
 
-        return (
-            self.x,
-            self.y,
-            self.x + self.width,
-            self.y + self.height,
-        )
+        return (self.x, self.y, self.right, self.bottom)
 
     @property
     def width(self) -> float:

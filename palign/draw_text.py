@@ -1,64 +1,69 @@
+from logging import getLogger
 from typing import Optional
 
 from PIL.ImageDraw import ImageDraw
 
+from palign.bounds import Bounds
 from palign.enums import Horizontal, Vertical
+from palign.position import Position
 from palign.style import Style
 from palign.text import Text
-from palign.types import Bounds
+
+DEFAULT_FONT_SIZE = 21
+
+log = getLogger("palign")
+
+
+def _render_text(
+    text: str,
+    draw: ImageDraw,
+    style: Style,
+    b: Bounds | Position,
+) -> None:
+    lh = style.font.size if style.font else DEFAULT_FONT_SIZE
+
+    if not isinstance(b, Bounds) and not (style.horizontal and style.vertical):
+        log.warning("Text will not be aligned when bounds are a position")
+
+    t = Text(text, style, draw.textlength)
+
+    for index, line in enumerate(t):
+        match style.horizontal:
+            case Horizontal.Center if isinstance(b, Bounds):
+                x = b.x + (b.width / 2) - (line.width / 2)
+            case Horizontal.Right if isinstance(b, Bounds):
+                x = b.x + b.width - line.width
+            case _:
+                x = b.x
+
+        match style.vertical:
+            case Vertical.Center if isinstance(b, Bounds):
+                y = b.y + (b.height / 2) - (t.height / 2) + (lh * index)
+            case Vertical.Bottom if isinstance(b, Bounds):
+                y = b.y + b.height - t.height + (lh * index)
+            case _:
+                y = b.y + (lh * index)
+
+        for character in line:
+            draw.text(
+                (character.x + x, y),
+                character.character,
+                fill=style.color,
+                font=style.font,
+            )
 
 
 def draw_text(
     text: Optional[str],
     draw: ImageDraw,
     style: Style,
-    bounds: Bounds,
+    bounds: Bounds | Position,
 ) -> None:
     if style.background is not None:
-        draw.rectangle(bounds, fill=style.background)
+        if isinstance(bounds, Bounds):
+            draw.rectangle(bounds.top_left_bottom_right, fill=style.background)
+        else:
+            log.warning("Will not draw background when bounds is a position")
 
     if text:
-        if not style.font:
-            raise ValueError("draw_text requires a font")
-
-        line_height = style.font.size
-
-        t = Text(text, style, draw.textlength)
-
-        top = bounds[1]
-
-        width = bounds[2] - bounds[0]
-        height = bounds[3] - top
-
-        for index, line in enumerate(t):
-
-            match style.horizontal:
-                case Horizontal.Center:
-                    origin_x = bounds[0] + (width / 2) - (line.width / 2)
-                case Horizontal.Right:
-                    origin_x = bounds[0] + width - line.width
-                case _:
-                    origin_x = bounds[0]
-
-            match style.vertical:
-                case Vertical.Center:
-                    origin_y = (
-                        top
-                        + (height / 2)
-                        - (t.height / 2)
-                        + (line_height * index)
-                    )
-                case Vertical.Bottom:
-                    origin_y = top + height - t.height + (line_height * index)
-                case _:
-                    origin_y = top + (line_height * index)
-
-            for char in line:
-                render_x = char.x + origin_x
-                render_y = origin_y
-                draw.text(
-                    (render_x, render_y),
-                    char.character,
-                    fill=style.color,
-                    font=style.font,
-                )
+        _render_text(text, draw, style, bounds)

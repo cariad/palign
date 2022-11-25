@@ -3,22 +3,29 @@ from typing import Optional
 from nvalues import Volume
 from PIL.ImageDraw import ImageDraw
 
+from palign.bounds import Bounds
 from palign.cell import Cell
 from palign.draw_text import draw_text
 from palign.style import Style
-from palign.types import Bounds
 
 
 class Grid:
     """
     Text grid.
+
+    `columns` is the number of columns.
+
+    `rows` is the number of rows.
+
+    `default_style` is the optional style to apply to each cell that isn't
+    given its own explicit style.
     """
 
     def __init__(
         self,
         columns: int,
         rows: int,
-        cell_style: Optional[Style] = None,
+        default_style: Optional[Style] = None,
     ) -> None:
         def validate_key(key: tuple[int, int]) -> None:
             x = key[0]
@@ -40,7 +47,7 @@ class Grid:
             key_validator=validate_key,
         )
 
-        self._default_style = cell_style
+        self._default_style = default_style
 
     def __delitem__(self, key: tuple[int, int]) -> None:
         del self._cells[key]
@@ -51,43 +58,25 @@ class Grid:
     def __setitem__(self, key: tuple[int, int], value: Cell) -> None:
         self._cells[key] = value
 
-    def _cell_bounds(
-        self,
-        column: int,
-        row: int,
-        grid_left: float,
-        grid_top: float,
-        grid_width: float,
-        grid_height: float,
-    ) -> Bounds:
-        column_width = grid_width / self._columns
-        row_height = grid_height / self._rows
-        left = grid_left + (column * column_width)
-        top = grid_top + (row * row_height)
-        return (left, top, left + column_width, top + row_height)
+    def _cell_bounds(self, x: int, y: int, grid_bounds: Bounds) -> Bounds:
+        column_width = grid_bounds.width / self._columns
+        row_height = grid_bounds.height / self._rows
 
-    def render(
-        self,
-        draw: ImageDraw,
-        left: float,
-        top: float,
-        width: float,
-        height: float,
-    ) -> None:
+        return Bounds(
+            grid_bounds.x + (x * column_width),
+            grid_bounds.y + (y * row_height),
+            column_width,
+            row_height,
+        )
+
+    def render(self, draw: ImageDraw, bounds: Bounds) -> None:
         """
-        Renders the grid.
+        Renders the grid via `draw` within `bounds`.
         """
 
         for x in range(self._columns):
             for y in range(self._rows):
-                bounds = self._cell_bounds(
-                    x,
-                    y,
-                    left,
-                    top,
-                    width,
-                    height,
-                )
+                cell_bounds = self._cell_bounds(x, y, bounds)
                 cell = self[x, y]
 
                 style = (
@@ -95,4 +84,4 @@ class Grid:
                     if self._default_style
                     else cell.style
                 )
-                draw_text(cell.text, draw, style, bounds)
+                draw_text(cell.text, draw, style, cell_bounds)
