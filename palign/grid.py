@@ -3,9 +3,9 @@ from typing import Optional
 from nvalues import Volume
 from PIL.ImageDraw import ImageDraw
 
-from palign.bounds import Bounds
 from palign.cell import Cell
 from palign.draw_text import draw_text
+from palign.region import Region
 from palign.style import Style
 
 
@@ -25,6 +25,7 @@ class Grid:
         self,
         columns: int,
         rows: int,
+        region: Region,
         default_style: Optional[Style] = None,
     ) -> None:
         def validate_key(key: tuple[int, int]) -> None:
@@ -37,6 +38,7 @@ class Grid:
                 raise ValueError(f"No row {y} (grid has {rows})")
 
         self._columns = columns
+        self._region = region
         self._rows = rows
 
         def make_cell(_: tuple[int, int]) -> Cell:
@@ -58,25 +60,25 @@ class Grid:
     def __setitem__(self, key: tuple[int, int], value: Cell) -> None:
         self._cells[key] = value
 
-    def _cell_bounds(self, x: int, y: int, grid_bounds: Bounds) -> Bounds:
-        column_width = grid_bounds.width / self._columns
-        row_height = grid_bounds.height / self._rows
+    def _cell_bounds(self, x: int, y: int) -> Region:
+        column_width = int(self._region.width / self._columns)
+        row_height = int(self._region.height / self._rows)
 
-        return Bounds(
-            grid_bounds.x + (x * column_width),
-            grid_bounds.y + (y * row_height),
+        return self._region.pregion(
+            x * column_width,
+            y * row_height,
             column_width,
             row_height,
         )
 
-    def render(self, draw: ImageDraw, bounds: Bounds) -> None:
+    def render(self, draw: ImageDraw) -> None:
         """
-        Renders the grid via `draw` within `bounds`.
+        Renders the grid.
         """
 
         for x in range(self._columns):
             for y in range(self._rows):
-                cell_bounds = self._cell_bounds(x, y, bounds)
+                cell_bounds = self._cell_bounds(x, y)
                 cell = self[x, y]
 
                 style = (
