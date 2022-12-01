@@ -50,6 +50,12 @@ setup(
     package_data={
         "palign": ["py.typed"],
     },
+    project_urls={
+        "Documentation": "https://palign.dev",
+        "Funding": "https://github.com/sponsors/cariad",
+        "Issues": "https://github.com/cariad/palign/issues",
+        "Source": "https://github.com/cariad/palign",
+    },
     python_requires=">=3.9",
     url="https://github.com/cariad/palign",
     version=version,

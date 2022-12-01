@@ -1,5 +1,7 @@
 # Palign
 
+[![codecov](https://codecov.io/gh/cariad/palign/branch/main/graph/badge.svg?token=m2tDKm3v3E)](https://codecov.io/gh/cariad/palign)
+
 **Palign** is a Python package that helps to render and align text in [Pillow](https://python-pillow.org/).
 
 ## Examples
@@ -25,7 +27,7 @@ image.save(Path() / "docs" / "images" / "example-0.png", "png")
 ```
 
 <figure markdown>
-  ![Image title](images/example-0.png)
+  ![](images/example-0.png)
 </figure>
 
 `Style` can also describe colour and tracking:
@@ -53,7 +55,7 @@ image.save(Path() / "docs" / "images" / "example-1.png", "png")
 ```
 
 <figure markdown>
-  ![Image title](images/example-1.png)
+  ![](images/example-1.png)
 </figure>
 
 If you specify a region to render within (rather than just a point to render _at_) then text can aligned and the background can be coloured:
@@ -98,6 +100,12 @@ for vertical in Vertical:
 
 image.save(Path() / "docs" / "images" / "example-2.png", "png")
 ```
+
+<figure markdown>
+  ![](images/example-2.png)
+</figure>
+
+For detailed usage information, see the [`Style` class](./style.md).
 
 ## Installation
 
