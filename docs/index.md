@@ -99,6 +99,12 @@ for vertical in Vertical:
 image.save(Path() / "docs" / "images" / "example-2.png", "png")
 ```
 
+<figure markdown>
+  ![Image title](images/example-2.png)
+</figure>
+
+For detailed usage information, see the [`Style` class](./style.md).
+
 ## Installation
 
 **Palign** requires Python 3.9 or later.
