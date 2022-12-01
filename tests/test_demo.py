@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from bounden import Percent, Vector2
+from bounden import Percent
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
@@ -83,96 +83,61 @@ def test_demo(font_path: str) -> None:
     image.save(image_dir / "grid.png", "png")
 
 
-def test_text(font_path: str) -> None:
-    font_height = 21
-    font = truetype(font_path, font_height)
-    line_height = font_height * 3
+def test_example_0() -> None:
+    image = Image.new("RGB", (150, 28))
+    draw = ImageDraw.Draw(image)
 
-    margin = 40
+    style = Style(font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21))
 
-    image_region = Region.image(500, (line_height * 8) + margin)
+    draw_text("Hello world!", draw, style, (0, 0))
+
+    image.save(image_dir / "example-0.png", "png")
+
+
+def test_example_1() -> None:
+    image = Image.new("RGB", (260, 120), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+
+    style = Style(
+        color=(0, 0, 0),
+        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
+    )
+
+    draw_text("Red!", draw, style + Style(color=(255, 0, 0)), (0, 0))
+    draw_text("Increased tracking!", draw, style + Style(tracking=2), (0, 40))
+    draw_text("Decreased tracking!", draw, style + Style(tracking=-2), (0, 80))
+
+    image.save(Path() / "docs" / "images" / "example-1.png", "png")
+
+
+def test_example_2() -> None:
+    image_region = Region.image(300, 720)
     image = Image.new("RGB", image_region.size, (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    render_region = image_region.expand(-margin)
+    # Build a region to render the first block of text into.
+    #
+    # Start by contracting the image boundary to create a margin, then create a
+    # subregion that starts in the top corner, takes all available width and is
+    # 70 pixels tall.
+    text_region = image_region.expand(-10).pregion(0, 0, Percent(100), 70)
 
-    text_region = render_region.pregion(0, 0, Percent(100), line_height)
-
-    style = Style(color=(0, 0, 0), font=font, vertical=Vertical.Center)
-
-    draw_text(
-        "Hello! This is left aligned!",
-        draw,
-        style + Style(horizontal=Horizontal.Left),
-        text_region,
+    style = Style(
+        border_color=(200, 200, 200),
+        border_radius=3,
+        border_width=1,
+        color=(0, 0, 0),
+        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
     )
 
-    text_region += Vector2(0, line_height)
+    for vertical in Vertical:
+        for horizontal in Horizontal:
+            alignment = Style(horizontal=horizontal, vertical=vertical)
+            text = f"{vertical.name} {horizontal.name}"
+            draw_text(text, draw, style + alignment, text_region)
 
-    draw_text(
-        "And this is right-aligned!",
-        draw,
-        style + Style(horizontal=Horizontal.Right),
-        text_region,
-    )
+            # Translate the region down by (text_region.height + 10) pixels for
+            # the next block.
+            text_region += (0, text_region.height + 10)
 
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "And this is centred!",
-        draw,
-        style + Style(horizontal=Horizontal.Center),
-        text_region,
-    )
-
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "We can increase the tracking...",
-        draw,
-        style + Style(horizontal=Horizontal.Center, tracking=2),
-        text_region,
-    )
-
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "...and naturally, decrease it too.",
-        draw,
-        style + Style(horizontal=Horizontal.Center, tracking=-2),
-        text_region,
-    )
-
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "Text can be coloured...",
-        draw,
-        style + Style(color=(255, 0, 0), horizontal=Horizontal.Center),
-        text_region,
-    )
-
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "...as can backgrounds",
-        draw,
-        style
-        + Style(
-            background=(0, 0, 0),
-            color=(255, 255, 255),
-            horizontal=Horizontal.Center,
-        ),
-        text_region,
-    )
-
-    text_region += Vector2(0, text_region.height)
-
-    draw_text(
-        "<3",
-        draw,
-        style + Style(horizontal=Horizontal.Center),
-        text_region,
-    )
-
-    image.save(image_dir / "text.png", "png")
+    image.save(image_dir / "example-2.png", "png")

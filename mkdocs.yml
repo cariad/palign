@@ -1,0 +1,14 @@
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - index.md
+
+site_name: Palign
+site_url: https://palign.dev/
+
+theme:
+  name: material

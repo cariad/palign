@@ -18,6 +18,7 @@ jobs:
           runCmd: >
             pip install --upgrade --user -r requirements.dev.txt &&
             ./validate.sh &&
+            coverage xml &&
             ./build.sh ${{ github.ref_name }}
 
       - name: Publish code coverage

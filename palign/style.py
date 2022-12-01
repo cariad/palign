@@ -15,6 +15,12 @@ class Style:
     `background_color` describes the background colour. A background will not
     be painted if this is omitted.
 
+    `border_color` describes the border colour. Defaults to none.
+
+    `border_radius` describes the border radius. Defaults to none.
+
+    `border_width` describes the border width. Defaults to none.
+
     `color` describes the text colour. Text will not be painted if this is
     omitted.
 
@@ -36,6 +42,27 @@ class Style:
     Background colour.
 
     A background will not be painted if this is omitted.
+    """
+
+    border_color: Optional[Color] = None
+    """
+    Border colour.
+
+    A border will not be painted if this is omitted.
+    """
+
+    border_radius: Optional[float] = None
+    """
+    Border radius.
+
+    The border will be rounded if this is set.
+    """
+
+    border_width: Optional[float] = None
+    """
+    Border width.
+
+    A border will not be painted if this is omitted.
     """
 
     color: Optional[Color] = None
@@ -79,6 +106,9 @@ class Style:
 
         return Style(
             background=_or(self.background, o.background),
+            border_color=_or(self.border_color, o.border_color),
+            border_radius=_or(self.border_radius, o.border_radius),
+            border_width=_or(self.border_width, o.border_width),
             color=_or(self.color, o.color),
             font=_or(self.font, o.font),
             horizontal=_or(self.horizontal, o.horizontal),
