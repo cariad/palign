@@ -3,9 +3,8 @@ from typing import Optional
 
 from PIL.ImageDraw import ImageDraw
 
-from palign.bounds import Bounds
 from palign.enums import Horizontal, Vertical
-from palign.position import Position
+from palign.region import Point, Region
 from palign.style import Style
 from palign.text import Text
 
@@ -18,35 +17,35 @@ def _render_text(
     text: str,
     draw: ImageDraw,
     style: Style,
-    b: Bounds | Position,
+    b: Point | Region,
 ) -> None:
     lh = style.font.size if style.font else DEFAULT_FONT_SIZE
 
-    if not isinstance(b, Bounds) and not (style.horizontal and style.vertical):
+    if not isinstance(b, Region) and not (style.horizontal and style.vertical):
         log.warning("Text will not be aligned when bounds are a position")
 
     t = Text(text, style, draw.textlength)
 
     for index, line in enumerate(t):
         match style.horizontal:
-            case Horizontal.Center if isinstance(b, Bounds):
-                x = b.x + (b.width / 2) - (line.width / 2)
-            case Horizontal.Right if isinstance(b, Bounds):
-                x = b.x + b.width - line.width
+            case Horizontal.Center if isinstance(b, Region):
+                x = b.left + (b.width / 2) - (line.width / 2)
+            case Horizontal.Right if isinstance(b, Region):
+                x = b.left + b.width - line.width
             case _:
-                x = b.x
+                x = b.left
 
         match style.vertical:
-            case Vertical.Center if isinstance(b, Bounds):
-                y = b.y + (b.height / 2) - (t.height / 2) + (lh * index)
-            case Vertical.Bottom if isinstance(b, Bounds):
-                y = b.y + b.height - t.height + (lh * index)
+            case Vertical.Center if isinstance(b, Region):
+                y = b.top + (b.height / 2) - (t.height / 2) + (lh * index)
+            case Vertical.Bottom if isinstance(b, Region):
+                y = b.top + b.height - t.height + (lh * index)
             case _:
-                y = b.y + (lh * index)
+                y = b.top + (lh * index)
 
         for character in line:
             draw.text(
-                (character.x + x, y),
+                (float(x + character.x), float(y)),
                 character.character,
                 fill=style.color,
                 font=style.font,
@@ -57,11 +56,20 @@ def draw_text(
     text: Optional[str],
     draw: ImageDraw,
     style: Style,
-    bounds: Bounds | Position,
+    bounds: Point | Region,
 ) -> None:
+    if isinstance(bounds, Region):
+        bounds = bounds.absolute
+
     if style.background is not None:
-        if isinstance(bounds, Bounds):
-            draw.rectangle(bounds.top_left_bottom_right, fill=style.background)
+        if isinstance(bounds, Region):
+            pb = (
+                float(bounds.left),
+                float(bounds.top.coordinate),
+                float(bounds.right.coordinate),
+                float(bounds.bottom.coordinate),
+            )
+            draw.rectangle(pb, fill=style.background)
         else:
             log.warning("Will not draw background when bounds is a position")
 

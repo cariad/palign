@@ -2,7 +2,9 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=568773253)
 
-![Demonstration](https://github.com/cariad/palign/blob/main/demo.png)
+![Demonstration](https://github.com/cariad/palign/blob/main/images/docs/text.png)
+
+![Demonstration](https://github.com/cariad/palign/blob/main/images/docs/grid.png)
 
 ## Installation
 
