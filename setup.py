@@ -36,7 +36,7 @@ setup(
     description="Pillow text alignment helper",
     include_package_data=True,
     install_requires=[
-        "bounden==1.0.0b15",
+        "bounden==1.0.0b18",
         "nvalues==1.0.0b6",
         "pillow~=9.3",
     ],

@@ -1,39 +1,126 @@
-from typing import Iterator, List
+from typing import Optional
 
+from bounden import Region2, ResolvedRegion2
+from PIL.ImageDraw import ImageDraw
+
+from palign.config import DEFAULT_FONT_SIZE
+from palign.log import log
 from palign.style import Style
-from palign.text_line import TextLine
-from palign.types import GetTextLength
+from palign.text_lines import TextLines
+from palign.types import Point, Region, ResolvedRegion
 
 
 class Text:
-    def __init__(
+    """
+    Text renderer.
+
+    `draw` is the Pillow drawing instance to render to.
+
+    `style` is the optional default style to apply.
+    """
+
+    def __init__(self, draw: ImageDraw, style: Optional[Style] = None) -> None:
+        self._draw = draw
+        self._style = style or Style()
+
+    def _render_text(
         self,
-        text: str,
+        text_lines: TextLines,
         style: Style,
-        get_length: GetTextLength,
+        target: ResolvedRegion,
     ) -> None:
+        line_height = style.font.size if style.font else DEFAULT_FONT_SIZE
 
-        curr_line = TextLine(style, get_length)
-        self._lines: List[TextLine] = [curr_line]
+        lines_region = target.region2(
+            0 if style.horizontal is None else style.horizontal,
+            0 if style.vertical is None else style.vertical,
+            text_lines.width,
+            text_lines.height,
+        ).resolve()
 
-        self._height = 0
+        for line_index, line in enumerate(text_lines):
+            line_region = lines_region.region2(
+                0 if style.horizontal is None else style.horizontal,
+                0,
+                line.width,
+                line_height,
+            ).resolve()
 
-        for char in text:
-            if char == "\n":
-                curr_line = TextLine(style, get_length)
-                self._lines.append(curr_line)
+            line_resolved = line_region + (0, line_height * line_index)
+
+            for character in line:
+                self._draw.text(
+                    (line_resolved.left + character.x, line_resolved.top),
+                    character.character,
+                    fill=style.color,
+                    font=style.font,
+                )
+
+    def draw_text(
+        self,
+        text: Optional[str],
+        style: Style,
+        bounds: Region | ResolvedRegion | Point,
+    ) -> None:
+        style = self._style + style
+        lines = TextLines(text, style, self._draw.textlength) if text else None
+
+        if lines is not None and isinstance(bounds, tuple):
+            bounds = Region.new(
+                bounds[0],
+                bounds[1],
+                lines.width,
+                lines.height,
+            )
+
+        if isinstance(bounds, Region2):
+            resolved = bounds.resolve()
+        elif isinstance(bounds, ResolvedRegion2):
+            resolved = bounds
+        else:
+            resolved = None
+
+        resolved_bounds = (
+            None
+            if resolved is None
+            else (resolved.left, resolved.top, resolved.right, resolved.bottom)
+        )
+
+        if style.background is not None:
+            if resolved_bounds is None:
+                log.warning(
+                    "Will not draw background when bounds is a position"
+                )
             else:
-                curr_line.append(char)
+                if style.border_radius is None:
+                    self._draw.rectangle(
+                        resolved_bounds,
+                        fill=style.background,
+                    )
+                else:
+                    self._draw.rounded_rectangle(
+                        resolved_bounds,
+                        outline=style.border_color,
+                        radius=style.border_radius,
+                    )
 
-        if not style.font:
-            raise ValueError("Text requires font")
+        if style.border_color is not None and style.border_width is not None:
+            if resolved_bounds is None:
+                log.warning("Will not draw border when bounds is a position")
+            else:
+                if style.border_radius is None:
+                    self._draw.rectangle(
+                        resolved_bounds,
+                        outline=style.border_color,
+                        width=style.border_width,
+                    )
+                else:
+                    self._draw.rounded_rectangle(
+                        resolved_bounds,
+                        outline=style.border_color,
+                        radius=style.border_radius,
+                        width=style.border_width,
+                    )
 
-        self._height = style.font.size * len(self._lines)
-
-    def __iter__(self) -> Iterator[TextLine]:
-        for line in self._lines:
-            yield line
-
-    @property
-    def height(self) -> float:
-        return self._height
+        if lines is not None and resolved is not None:
+            self._render_text(lines, style, resolved)

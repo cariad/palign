@@ -1,12 +1,13 @@
 from typing import Optional
 
+from bounden import Region2
 from nvalues import Volume
 from PIL.ImageDraw import ImageDraw
 
 from palign.cell import Cell
-from palign.draw_text import draw_text
-from palign.region import Region
 from palign.style import Style
+from palign.text import Text
+from palign.types import AnyRegion, Region
 
 
 class Grid:
@@ -25,7 +26,7 @@ class Grid:
         self,
         columns: int,
         rows: int,
-        region: Region,
+        region: AnyRegion,
         default_style: Optional[Style] = None,
     ) -> None:
         def validate_key(key: tuple[int, int]) -> None:
@@ -38,7 +39,11 @@ class Grid:
                 raise ValueError(f"No row {y} (grid has {rows})")
 
         self._columns = columns
-        self._region = region
+
+        self._region = (
+            region.resolve() if isinstance(region, Region2) else region
+        )
+
         self._rows = rows
 
         def make_cell(_: tuple[int, int]) -> Cell:
@@ -49,7 +54,7 @@ class Grid:
             key_validator=validate_key,
         )
 
-        self._default_style = default_style
+        self._default_style = default_style or Style()
 
     def __delitem__(self, key: tuple[int, int]) -> None:
         del self._cells[key]
@@ -64,7 +69,7 @@ class Grid:
         column_width = int(self._region.width / self._columns)
         row_height = int(self._region.height / self._rows)
 
-        return self._region.pregion(
+        return self._region.region2(
             x * column_width,
             y * row_height,
             column_width,
@@ -76,14 +81,12 @@ class Grid:
         Renders the grid.
         """
 
+        renderer = Text(draw, self._default_style)
+
         for x in range(self._columns):
             for y in range(self._rows):
                 cell_bounds = self._cell_bounds(x, y)
                 cell = self[x, y]
 
-                style = (
-                    self._default_style + cell.style
-                    if self._default_style
-                    else cell.style
-                )
-                draw_text(cell.text, draw, style, cell_bounds)
+                style = self._default_style + cell.style
+                renderer.draw_text(cell.text, style, cell_bounds)
