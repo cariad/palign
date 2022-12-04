@@ -8,64 +8,52 @@ from palign import Alignment, Grid, Percent, Style, Text, make_image_region
 image_dir = Path() / "docs" / "images"
 
 
-def test_demo(font_path: str) -> None:
+def test_demo() -> None:
     image_region = make_image_region(600, 400)
 
     image = Image.new("RGB", image_region.size, (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    small_font = truetype(font_path, 26)
+    style = Style(
+        color=(0, 0, 0),
+        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 26),
+    )
 
     column_count = 3
     row_count = 3
 
-    default_style = Style(
-        color=(0, 0, 0),
-        font=small_font,
-    )
-
     grid = Grid(
         column_count,
         row_count,
-        image_region.expand(-40),
-        style=default_style,
+        image_region.expand(-10),
+        style=style,
     )
 
-    grid[0, 0].text = "Top\nLeft"
-    grid[0, 0].style.horizontal = Alignment.Near
-    grid[0, 0].style.vertical = Alignment.Near
+    for vertical_index, vertical in enumerate(Alignment):
+        for horizontal_index, horizontal in enumerate(Alignment):
+            match horizontal:
+                case Alignment.Near:
+                    horizontal_name = "Left"
+                case Alignment.Center:
+                    horizontal_name = "Center"
+                case Alignment.Far:
+                    horizontal_name = "Right"
 
-    grid[1, 0].text = "Top\nCenter"
-    grid[1, 0].style.horizontal = Alignment.Center
-    grid[1, 0].style.vertical = Alignment.Near
+            match vertical:
+                case Alignment.Near:
+                    vertical_name = "Top"
+                case Alignment.Center:
+                    vertical_name = "Center"
+                case Alignment.Far:
+                    vertical_name = "Bottom"
 
-    grid[2, 0].text = "Top\nRight"
-    grid[2, 0].style.horizontal = Alignment.Far
-    grid[2, 0].style.vertical = Alignment.Near
+            t = f"{vertical_name}\n{horizontal_name}"
 
-    grid[0, 1].text = "Center\nLeft"
-    grid[0, 1].style.horizontal = Alignment.Near
-    grid[0, 1].style.vertical = Alignment.Center
-
-    grid[1, 1].text = "Center\nCenter"
-    grid[1, 1].style.horizontal = Alignment.Center
-    grid[1, 1].style.vertical = Alignment.Center
-
-    grid[2, 1].text = "Center\nRight"
-    grid[2, 1].style.horizontal = Alignment.Far
-    grid[2, 1].style.vertical = Alignment.Center
-
-    grid[0, 2].text = "Bottom\nLeft"
-    grid[0, 2].style.horizontal = Alignment.Near
-    grid[0, 2].style.vertical = Alignment.Far
-
-    grid[1, 2].text = "Bottom\nCenter"
-    grid[1, 2].style.horizontal = Alignment.Center
-    grid[1, 2].style.vertical = Alignment.Far
-
-    grid[2, 2].text = "Bottom\nRight"
-    grid[2, 2].style.horizontal = Alignment.Far
-    grid[2, 2].style.vertical = Alignment.Far
+            grid[horizontal_index, vertical_index].text = t
+            grid[
+                horizontal_index, vertical_index
+            ].style.horizontal = horizontal
+            grid[horizontal_index, vertical_index].style.vertical = vertical
 
     def color_bit(column: int) -> int:
         return 155 + int((100 / column_count) * column)
@@ -79,7 +67,7 @@ def test_demo(font_path: str) -> None:
 
     grid.draw(draw)
 
-    image.save(image_dir / "grid.png", "png")
+    image.save("./docs/images/grid.png", "png")
 
 
 def test_example_0() -> None:
