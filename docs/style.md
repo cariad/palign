@@ -22,42 +22,41 @@ style = Style(
 
 `background` sets the background [colour](#colour).
 
-!!! warning
-
-    Backgrounds will be painted only if the text is rendered with a region and not just a point.
-
-
 `border_color` sets the border [colour](#colour).
 
 !!! warning
 
-    Borders will be painted only if the text is rendered with a region and if both `border_color` and `border_width` have values.
+    Borders will be painted only if both `border_color` and `border_width` have values.
 
 `border_radius` sets the border radius. Corners will be square by default and rounded if a radius is set.
+
+!!! warning
+
+    Borders will be painted only if both `border_color` and `border_width` have values.
 
 `border_width` sets the border width.
 
 !!! warning
 
-    Borders will be painted only if the text is rendered with a region and if both `border_color` and `border_width` have values.
+    Borders will be painted only if both `border_color` and `border_width` have values.
 
 `color` sets the text colour.
 
 `font` sets text font.
 
-`horizontal` sets the horizontal alignment via the `palign.Horizontal` enum.
+`horizontal` sets the horizontal alignment. `Alignment.Near` implies _left_, `Alignment.Center` will centre the text and `Alignment.Far` implies _right_.
 
 !!! warning
 
-    Text will be aligned only if the text is rendered with a region and not just a point.
+    Text will be aligned only if the text is rendered within a region and not just a point.
 
 `tracking` sets the spacing between characters.
 
-`vertical` sets the vertical alignment via the `palign.Vertical` enum.
+`vertical` sets the vertical alignment. `Alignment.Near` implies _top_, `Alignment.Center` will centre the text and `Alignment.Far` implies _bottom_.
 
 !!! warning
 
-    Text will be aligned only if the text is rendered with a region and not just a point.
+    Text will be aligned only if the text is rendered within a region and not just a point.
 
 ## Merging styles
 
