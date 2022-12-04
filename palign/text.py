@@ -8,7 +8,7 @@ from palign.text_lines import TextLines
 from palign.types import Point, Region, ResolvedRegion
 
 
-class TextRenderer:
+class Text:
     """
     Text renderer.
 

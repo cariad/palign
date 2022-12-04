@@ -1,16 +1,16 @@
-# TextRenderer class
+# Text class
 
-The `TextRenderer` class renders text to a Pillow image.
+The `Text` class renders text to a Pillow image.
 
 ## Initialisation
 
-A `TextRenderer` instance must be initialised with a Pillow `Draw`. You can also pass in an optional base [`Style`](./style.md) for all the text to be rendered.
+A `Text` instance must be initialised with a Pillow `Draw`. You can also pass in an optional base [`Style`](./style.md) for all the text to be rendered.
 
 ```python
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Style, TextRenderer
+from palign import Style, Text
 
 
 image = Image.new("RGB", (100, 100))
@@ -20,7 +20,7 @@ style = Style(
     font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
 )
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 ```
 
 ## Drawing text
@@ -35,7 +35,7 @@ This code draws "Hello!" at the coordinates `(0, 0)`, or the top-left of the ima
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Style, TextRenderer
+from palign import Style, Text
 
 
 image = Image.new("RGB", (300, 300))
@@ -45,15 +45,15 @@ style = Style(
     font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
 )
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 renderer.draw_text("Hello!", (0, 0))
 
-image.save("./docs/images/text-renderer-example-0.png", "png")
+image.save("./docs/images/text-example-0.png", "png")
 ```
 
 <figure markdown>
-  ![Hello!](images/text-renderer-example-0.png)
+  ![Hello!](images/text-example-0.png)
 </figure>
 
 ### Aligning within a region
@@ -66,7 +66,7 @@ For example, this code creates a region at the top-left of the image, with width
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Alignment, Region, Style, TextRenderer
+from palign import Alignment, Region, Style, Text
 
 
 image = Image.new("RGB", (300, 300))
@@ -82,15 +82,15 @@ style = Style(
 
 region = Region.new(0, 0, 200, 200)
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 renderer.draw_text("Hello!", region)
 
-image.save("./docs/images/text-renderer-example-1.png", "png")
+image.save("./docs/images/text-example-1.png", "png")
 ```
 
 <figure markdown>
-  ![Hello!](images/text-renderer-example-1.png)
+  ![Hello!](images/text-example-1.png)
 </figure>
 
 ### Relative alignment
@@ -103,7 +103,7 @@ For example, this code uses `make_image_region` to describe the full size of the
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Alignment, Style, TextRenderer, make_image_region
+from palign import Alignment, Style, Text, make_image_region
 
 
 image_region = make_image_region(300, 300)
@@ -121,15 +121,15 @@ style = Style(
 
 region = image_region.region2(Alignment.Far, Alignment.Far, 200, 200)
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 renderer.draw_text("Hello!", region)
 
-image.save("./docs/images/text-renderer-example-2.png", "png")
+image.save("./docs/images/text-example-2.png", "png")
 ```
 
 <figure markdown>
-  ![Hello!](images/text-renderer-example-2.png)
+  ![Hello!](images/text-example-2.png)
 </figure>
 
 ### Relative sizes
@@ -142,7 +142,7 @@ For example, this code creates a subregion that's 50% of the image's width and h
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Alignment, Percent, Style, TextRenderer, make_image_region
+from palign import Alignment, Percent, Style, Text, make_image_region
 
 
 image_region = make_image_region(300, 300)
@@ -165,13 +165,13 @@ region = image_region.region2(
     Percent(50),
 )
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 renderer.draw_text("Hello!", region)
 
-image.save("./docs/images/text-renderer-example-3.png", "png")
+image.save("./docs/images/text-example-3.png", "png")
 ```
 
 <figure markdown>
-  ![Hello!](images/text-renderer-example-3.png)
+  ![Hello!](images/text-example-3.png)
 </figure>

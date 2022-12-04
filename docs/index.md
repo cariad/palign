@@ -6,13 +6,13 @@
 
 ## Examples
 
-`TextRenderer` draws text of a given [`Style`](./style.md) at a set of coordinates:
+`Text` draws text of a given [`Style`](./style.md) at a set of coordinates:
 
 ```python
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Style, TextRenderer
+from palign import Style, Text
 
 
 # Create a Pillow Image and Draw as usual:
@@ -25,7 +25,7 @@ style = Style(
 )
 
 # Create a text renderer:
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 # Draw "Hello world!" at (0, 0):
 renderer.draw_text("Hello world!", (0, 0))
@@ -44,7 +44,7 @@ image.save("./docs/images/example-0.png", "png")
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Style, TextRenderer
+from palign import Style, Text
 
 
 image = Image.new("RGB", (410, 410), (255, 255, 255))
@@ -55,7 +55,7 @@ style = Style(
     font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
 )
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 # Pass in a style to merge into the renderer's base style:
 renderer.draw_text(
@@ -113,7 +113,7 @@ If you specify a region to render within (rather than just a point to render _at
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Alignment, Percent, Style, TextRenderer, make_image_region
+from palign import Alignment, Percent, Style, Text, make_image_region
 
 
 # Create an image region:
@@ -145,7 +145,7 @@ style = Style(
     font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
 )
 
-renderer = TextRenderer(draw, style)
+renderer = Text(draw, style)
 
 for vertical in Alignment:
     for horizontal in Alignment:
@@ -181,7 +181,7 @@ image.save("./docs/images/example-2.png", "png")
   ![](images/example-2.png)
 </figure>
 
-For detailed usage information, see the [`TextRenderer`](./text-renderer.md) and [`Style`](./style.md) classes.
+For detailed usage information, see the [`Text`](./text.md) and [`Style`](./style.md) classes.
 
 ## Installation
 

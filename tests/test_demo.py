@@ -3,14 +3,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import (
-    Alignment,
-    Grid,
-    Percent,
-    Style,
-    TextRenderer,
-    make_image_region,
-)
+from palign import Alignment, Grid, Percent, Style, Text, make_image_region
 
 image_dir = Path() / "docs" / "images"
 
@@ -100,7 +93,7 @@ def test_example_0() -> None:
     )
 
     # Create a text renderer:
-    renderer = TextRenderer(draw, style)
+    renderer = Text(draw, style)
 
     # Draw "Hello world!" at (0, 0):
     renderer.draw_text("Hello world!", (0, 0))
@@ -118,7 +111,7 @@ def test_example_1() -> None:
         font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
     )
 
-    renderer = TextRenderer(draw, style)
+    renderer = Text(draw, style)
 
     # Pass in a style to merge into the renderer's base style:
     renderer.draw_text(
@@ -198,7 +191,7 @@ def test_example_2() -> None:
         font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
     )
 
-    renderer = TextRenderer(draw, style)
+    renderer = Text(draw, style)
 
     for vertical in Alignment:
         for horizontal in Alignment:

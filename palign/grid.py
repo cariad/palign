@@ -6,7 +6,7 @@ from PIL.ImageDraw import ImageDraw
 
 from palign.cell import Cell
 from palign.style import Style
-from palign.text_renderer import TextRenderer
+from palign.text import Text
 from palign.types import AnyRegion
 
 
@@ -80,7 +80,7 @@ class Grid:
         Renders the grid.
         """
 
-        renderer = TextRenderer(draw, self._default_style)
+        renderer = Text(draw, self._default_style)
 
         for x in range(self._columns):
             for y in range(self._rows):

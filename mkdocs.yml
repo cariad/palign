@@ -9,7 +9,7 @@ markdown_extensions:
 nav:
   - index.md
   - style.md
-  - text-renderer.md
+  - text.md
 
 site_name: Palign
 site_url: https://palign.dev/
