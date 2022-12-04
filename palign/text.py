@@ -8,7 +8,7 @@ from palign.text_lines import TextLines
 from palign.types import Point, Region, ResolvedRegion
 
 
-class TextRenderer:
+class Text:
     """
     Text renderer.
 
@@ -61,6 +61,10 @@ class TextRenderer:
         bounds: Region2[float, float] | ResolvedRegion | Point,
         style: Optional[Style] = None,
     ) -> None:
+        """
+        Draws `text` at/within `bounds` with optional `style`.
+        """
+
         style = self._style if style is None else self._style + style
         lines = TextLines(text, style, self._draw.textlength)
 

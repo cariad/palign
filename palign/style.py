@@ -28,13 +28,15 @@ class Style:
     possible if this is omitted, but many text operations will fail.
 
     `horizontal` describes the text's horizontal alignment within its bounds.
-    Defaults to left.
+    `Alignment.Near` implies left, `Alignment.Center` will centre the text
+    and `Alignment.Far` implies right.
 
     `tracking` describes the space to insert between each character. Defaults
     to none.
 
     `vertical` describes the text's vertical alignment within its bounds.
-    Defaults to top.
+    `Alignment.Near` implies top, `Alignment.Center` will centre the text and
+    `Alignment.Far` implies bottom.
     """
 
     background: Optional[Color] = None
@@ -83,6 +85,9 @@ class Style:
     horizontal: Optional[Alignment] = None
     """
     Horizontal alignment.
+
+    `Alignment.Near` implies left, `Alignment.Center` will centre the text
+    and `Alignment.Far` implies right.
     """
 
     tracking: Optional[float] = None
@@ -93,6 +98,9 @@ class Style:
     vertical: Optional[Alignment] = None
     """
     Vertical alignment.
+
+    `Alignment.Near` implies top, `Alignment.Center` will centre the text and
+    `Alignment.Far` implies bottom.
     """
 
     def __add__(self, o: Any) -> "Style":

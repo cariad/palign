@@ -6,7 +6,7 @@ from PIL.ImageDraw import ImageDraw
 
 from palign.cell import Cell
 from palign.style import Style
-from palign.text_renderer import TextRenderer
+from palign.text import Text
 from palign.types import AnyRegion
 
 
@@ -20,8 +20,7 @@ class Grid:
 
     `region` is the region to render the grid within.
 
-    `default_style` is the optional style to apply to each cell that isn't
-    given its own explicit style.
+    `style` is the optional base style to apply to each cell.
     """
 
     def __init__(
@@ -29,7 +28,7 @@ class Grid:
         columns: int,
         rows: int,
         region: AnyRegion,
-        default_style: Optional[Style] = None,
+        style: Optional[Style] = None,
     ) -> None:
         def validate_key(key: tuple[int, int]) -> None:
             x = key[0]
@@ -56,7 +55,7 @@ class Grid:
             key_validator=validate_key,
         )
 
-        self._default_style = default_style or Style()
+        self._default_style = style or Style()
 
     def __delitem__(self, key: tuple[int, int]) -> None:
         del self._cells[key]
@@ -75,12 +74,12 @@ class Grid:
             row_height,
         )
 
-    def render(self, draw: ImageDraw) -> None:
+    def draw(self, draw: ImageDraw) -> None:
         """
-        Renders the grid.
+        Draws the grid.
         """
 
-        renderer = TextRenderer(draw, self._default_style)
+        renderer = Text(draw, self._default_style)
 
         for x in range(self._columns):
             for y in range(self._rows):
