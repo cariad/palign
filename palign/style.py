@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import Any, Optional, TypeVar
+from typing import Any, Iterator, Optional, TypeVar
 
 from bounden import Alignment
 from PIL.ImageFont import FreeTypeFont
@@ -90,6 +92,13 @@ class Style:
     and `Alignment.Far` implies right.
     """
 
+    def text(self, text: str) -> StyledText:
+        """
+        Gets `text` as a block of styled text.
+        """
+
+        return StyledText(self, text)
+
     tracking: Optional[float] = None
     """
     Character tracking.
@@ -123,3 +132,43 @@ class Style:
             tracking=_or(self.tracking, o.tracking),
             vertical=_or(self.vertical, o.vertical),
         )
+
+
+class StyledTextLineFragment:
+    """
+    A styled fragment of text.
+    """
+
+    def __init__(self, style: Style, text: str) -> None:
+        self._style = style
+        self._text = text
+
+    @property
+    def style(self) -> Style:
+        return self._style
+
+    @property
+    def text(self) -> str:
+        return self._text
+
+
+class StyledText:
+    """
+    A collection of styled line fragments.
+    """
+
+    def __init__(self, style: Style, text: str) -> None:
+        self._style = style
+        self._lines = text.split("\n")
+
+    def rebase_style(self, base: Style) -> None:
+        """
+        Update this collection's style with `base` as the new base.
+        """
+
+        self._style = base + self._style
+
+    @property
+    def lines(self) -> Iterator[StyledTextLineFragment]:
+        for line in self._lines:
+            yield StyledTextLineFragment(self._style, line)

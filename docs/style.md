@@ -100,3 +100,17 @@ For example:
 - `(0, 0, 255)` is blue
 - `(0, 0, 0, 0)` is transparent
 - `(255, 0, 255, 127)` is 50% opaque magenta
+
+## StyledText class
+
+The `StyledText` class describes strings with explicit styles. A `StyledText` instance can be created for a `Style` by calling its `text` function.
+
+For example, to explicitly style the word "world" in yellow:
+
+```python
+from palign import Style
+
+world = Style(color=(255, 255, 0)).text("world")
+```
+
+Render a `StyledText` instance by passing it to a [`Text`](./text.md) renderer.
