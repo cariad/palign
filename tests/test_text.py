@@ -15,7 +15,7 @@ def test_demo_0() -> None:
 
     renderer = Text(draw, style)
 
-    renderer.draw_text("Hello!", (0, 0))
+    renderer.draw("Hello!", (0, 0))
 
     image.save("./docs/images/text-example-0.png", "png")
 
@@ -36,7 +36,7 @@ def test_demo_1() -> None:
 
     renderer = Text(draw, style)
 
-    renderer.draw_text("Hello!", region)
+    renderer.draw("Hello!", region)
 
     image.save("./docs/images/text-example-1.png", "png")
 
@@ -59,7 +59,7 @@ def test_demo_2() -> None:
 
     renderer = Text(draw, style)
 
-    renderer.draw_text("Hello!", region)
+    renderer.draw("Hello!", region)
 
     image.save("./docs/images/text-example-2.png", "png")
 
@@ -87,7 +87,7 @@ def test_demo_3() -> None:
 
     renderer = Text(draw, style)
 
-    renderer.draw_text("Hello!", region)
+    renderer.draw("Hello!", region)
 
     image.save("./docs/images/text-example-3.png", "png")
 
