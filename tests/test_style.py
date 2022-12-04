@@ -1,5 +1,5 @@
 from PIL.ImageFont import truetype
-from pytest import mark
+from pytest import mark, raises
 
 from palign import Alignment, Style
 
@@ -63,3 +63,10 @@ font_1 = truetype("tests/font/ChelseaMarket-Regular.ttf", 1)
 )
 def test_add(a: Style, b: Style, expect: Style) -> None:
     assert a + b == expect
+
+
+def test_add__not_style() -> None:
+    with raises(TypeError) as ex:
+        _ = Style() + "foo"
+
+    assert str(ex.value) == "Can merge only Style to Style"
