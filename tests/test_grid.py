@@ -4,6 +4,17 @@ from pytest import mark, raises
 from palign import Grid, Region
 
 
+def test_delete() -> None:
+    grid = Grid(3, 3, Region.new(100, 100, 100, 100))
+    assert grid[0, 0].text is None
+
+    grid[0, 0].text = "foo"
+    assert grid[0, 0].text == "foo"
+
+    del grid[0, 0]
+    assert grid[0, 0].text is None
+
+
 @mark.parametrize(
     "coords, expect",
     [

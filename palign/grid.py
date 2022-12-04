@@ -64,9 +64,6 @@ class Grid:
     def __getitem__(self, key: tuple[int, int]) -> Cell:
         return self._cells[key]
 
-    def __setitem__(self, key: tuple[int, int], value: Cell) -> None:
-        self._cells[key] = value
-
     def _cell_bounds(self, x: int, y: int) -> Region2[float, float]:
         column_width = int(self._region.width / self._columns)
         row_height = int(self._region.height / self._rows)
