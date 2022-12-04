@@ -28,7 +28,7 @@ def test_demo(font_path: str) -> None:
         column_count,
         row_count,
         image_region.expand(-40),
-        default_style=default_style,
+        style=default_style,
     )
 
     grid[0, 0].text = "Top\nLeft"
@@ -77,7 +77,7 @@ def test_demo(font_path: str) -> None:
             blue = color_bit(x) if y == 2 else 255
             grid[x, y].style.background = (red, green, blue)
 
-    grid.render(draw)
+    grid.draw(draw)
 
     image.save(image_dir / "grid.png", "png")
 

@@ -1,6 +1,6 @@
 # Text class
 
-The `Text` class renders text to a Pillow image.
+The `Text` class draws text to a Pillow image.
 
 ## Initialisation
 

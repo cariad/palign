@@ -10,6 +10,7 @@ nav:
   - index.md
   - style.md
   - text.md
+  - grid.md
 
 site_name: Palign
 site_url: https://palign.dev/
