@@ -10,7 +10,7 @@ log.setLevel("DEBUG")
 
 
 @fixture
-def font(font_path: str) -> FreeTypeFont:
+def font() -> FreeTypeFont:
     return truetype("tests/font/ChelseaMarket-Regular.ttf", 42)
 
 
