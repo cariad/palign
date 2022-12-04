@@ -3,16 +3,22 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from PIL.ImageFont import truetype
 
-from palign import Alignment, Grid, Percent, Region, Style, Text
+from palign import (
+    Alignment,
+    Grid,
+    Percent,
+    Style,
+    TextRenderer,
+    make_image_region,
+)
 
 image_dir = Path() / "docs" / "images"
 
 
 def test_demo(font_path: str) -> None:
-    image_size = (600, 400)
-    image_region = Region.new(0, 0, *image_size).resolve()
+    image_region = make_image_region(600, 400)
 
-    image = Image.new("RGB", image_size, (255, 255, 255))
+    image = Image.new("RGB", image_region.size, (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
     small_font = truetype(font_path, 26)
@@ -84,49 +90,104 @@ def test_demo(font_path: str) -> None:
 
 
 def test_example_0() -> None:
-    image = Image.new("RGB", (150, 28))
-    draw = ImageDraw.Draw(image)
-
-    style = Style(font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21))
-
-    Text(draw).draw_text("Hello world!", style, (0, 0))
-
-    image.save(image_dir / "example-0.png", "png")
-
-
-def test_example_1() -> None:
-    image = Image.new("RGB", (260, 120), (255, 255, 255))
+    image = Image.new("RGB", (350, 180), (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
     style = Style(
         color=(0, 0, 0),
-        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
+        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
     )
 
-    renderer = Text(draw, style)
+    renderer = TextRenderer(draw, style)
 
-    renderer.draw_text("Red!", Style(color=(255, 0, 0)), (0, 0))
-    renderer.draw_text("Increased tracking!", Style(tracking=2), (0, 40))
-    renderer.draw_text("Decreased tracking!", Style(tracking=-2), (0, 80))
+    # Pass in a style to merge into the renderer's base style:
+    renderer.draw_text("Red!", (0, 0), style=Style(color=(255, 0, 0)))
+    renderer.draw_text("More tracking!", (0, 60), style=Style(tracking=2))
+    renderer.draw_text("Less tracking!", (0, 120), style=Style(tracking=-5))
 
-    image.save(Path() / "docs" / "images" / "example-1.png", "png")
+    image.save("./docs/images/example-1.png", "png")
+
+
+def test_example_1() -> None:
+    image = Image.new("RGB", (410, 410), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+
+    style = Style(
+        color=(0, 0, 0),
+        font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
+    )
+
+    renderer = TextRenderer(draw, style)
+
+    # Pass in a style to merge into the renderer's base style:
+    renderer.draw_text(
+        "Red!",
+        (0, 0),
+        style=Style(color=(255, 0, 0)),
+    )
+
+    renderer.draw_text(
+        "More tracking!",
+        (0, 60),
+        style=Style(tracking=2),
+    )
+
+    renderer.draw_text(
+        "Less tracking!",
+        (0, 120),
+        style=Style(tracking=-5),
+    )
+
+    renderer.draw_text(
+        "Highlight!",
+        (0, 180),
+        style=Style(background=(100, 255, 255)),
+    )
+
+    renderer.draw_text(
+        "Rounded highlight!",
+        (0, 240),
+        style=Style(background=(100, 255, 255), border_radius=20),
+    )
+
+    renderer.draw_text(
+        "Border!",
+        (0, 300),
+        style=Style(border_color=(255, 0, 0), border_width=3),
+    )
+
+    renderer.draw_text(
+        "Rounded border!",
+        (0, 360),
+        style=Style(
+            border_color=(255, 0, 0), border_radius=20, border_width=3
+        ),
+    )
+
+    image.save("./docs/images/example-1.png", "png")
 
 
 def test_example_2() -> None:
-    image_size = (300, 720)
-    image_region = Region.new(0, 0, *image_size).resolve()
+    # Create an image region:
+    image_region = make_image_region(300, 720)
 
-    image = Image.new("RGB", image_size, (255, 255, 255))
+    # Pass the image region's size into Image.new:
+    image = Image.new("RGB", image_region.size, (255, 255, 255))
     draw = ImageDraw.Draw(image)
 
-    # Build a region to render the first block of text into.
+    # We're going to build a region to render the first block of text into.
     #
-    # Start by contracting the image boundary to create a margin, then create a
-    # subregion that starts in the top corner, takes all available width and is
-    # 70 pixels tall.
-    text_region = (
-        image_region.expand(-10).region2(0, 0, Percent(100), 70).resolve()
-    )
+    # We want this region to fill the entire width of the image, with a little
+    # margin on every edge for comfort.
+    #
+    # So, let's start by creating a subregion with that margin by contracting:
+    margin_region = image_region.expand(-10)
+
+    # Now we'll create a subregion that starts in the top-left corner, fills
+    # 100% of the available width and is 70 pixels tall:
+    text_region = margin_region.region2(0, 0, Percent(100), 70).resolve()
+    # Note that we need to .resolve() the region to resolve the relative values
+    # to absolutes.
 
     style = Style(
         border_color=(200, 200, 200),
@@ -136,7 +197,7 @@ def test_example_2() -> None:
         font=truetype("tests/font/ChelseaMarket-Regular.ttf", 21),
     )
 
-    renderer = Text(draw, style)
+    renderer = TextRenderer(draw, style)
 
     for vertical in Alignment:
         for horizontal in Alignment:
@@ -159,10 +220,10 @@ def test_example_2() -> None:
                     vertical_name = "Bottom"
 
             text = f"{vertical_name} {horizontal_name}"
-            renderer.draw_text(text, alignment, text_region)
+            renderer.draw_text(text, text_region, style=alignment)
 
             # Translate the region down by (text_region.height + 10) pixels for
             # the next block.
             text_region += (0, text_region.height + 10)
 
-    image.save(image_dir / "example-2.png", "png")
+    image.save("./docs/images/example-2.png", "png")

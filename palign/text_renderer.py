@@ -10,7 +10,7 @@ from palign.text_lines import TextLines
 from palign.types import Point, Region, ResolvedRegion
 
 
-class Text:
+class TextRenderer:
     """
     Text renderer.
 
@@ -59,10 +59,10 @@ class Text:
     def draw_text(
         self,
         text: Optional[str],
-        style: Style,
-        bounds: Region | ResolvedRegion | Point,
+        bounds: Region | Region2[float, float] | ResolvedRegion | Point,
+        style: Optional[Style] = None,
     ) -> None:
-        style = self._style + style
+        style = self._style if style is None else self._style + style
         lines = TextLines(text, style, self._draw.textlength) if text else None
 
         if lines is not None and isinstance(bounds, tuple):
@@ -100,7 +100,7 @@ class Text:
                 else:
                     self._draw.rounded_rectangle(
                         resolved_bounds,
-                        outline=style.border_color,
+                        fill=style.background,
                         radius=style.border_radius,
                     )
 
