@@ -181,7 +181,7 @@ image.save("./docs/images/example-2.png", "png")
   ![](images/example-2.png)
 </figure>
 
-For detailed usage information, see the [`Style` class](./style.md).
+For detailed usage information, see the [`TextRenderer`](./text-renderer.md) and [`Style`](./style.md) classes.
 
 ## Installation
 

@@ -90,22 +90,23 @@ def test_demo(font_path: str) -> None:
 
 
 def test_example_0() -> None:
-    image = Image.new("RGB", (350, 180), (255, 255, 255))
+    # Create a Pillow Image and Draw as usual:
+    image = Image.new("RGB", (270, 60))
     draw = ImageDraw.Draw(image)
 
+    # Create a Style to describe the font:
     style = Style(
-        color=(0, 0, 0),
         font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
     )
 
+    # Create a text renderer:
     renderer = TextRenderer(draw, style)
 
-    # Pass in a style to merge into the renderer's base style:
-    renderer.draw_text("Red!", (0, 0), style=Style(color=(255, 0, 0)))
-    renderer.draw_text("More tracking!", (0, 60), style=Style(tracking=2))
-    renderer.draw_text("Less tracking!", (0, 120), style=Style(tracking=-5))
+    # Draw "Hello world!" at (0, 0):
+    renderer.draw_text("Hello world!", (0, 0))
 
-    image.save("./docs/images/example-1.png", "png")
+    # Same the image via Pillow:
+    image.save("./docs/images/example-0.png", "png")
 
 
 def test_example_1() -> None:

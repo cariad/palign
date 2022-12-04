@@ -177,7 +177,7 @@ image.save("./docs/images/example-2.png", "png")
 
 ![Text aligned horizontally and vertically](https://github.com/cariad/palign/blob/main/docs/images/example-2.png)
 
-For detailed usage information, see the [`Style` class](https://palign.dev/style/).
+For detailed usage information, see the [`TextRenderer`](https://palign.dev/text-renderer/) and [`Style`](https://palign.dev/style/) classes.
 
 ## Installation
 
