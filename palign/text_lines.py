@@ -2,10 +2,11 @@ from typing import Iterator
 
 from bounden import ResolvedVolume2
 
-from palign.config import DEFAULT_FONT_SIZE
 from palign.style import Style
 from palign.text_line import TextLine
 from palign.types import GetTextLength
+
+DEFAULT_FONT_SIZE = 21
 
 
 class TextLines:
@@ -42,7 +43,7 @@ class TextLines:
         return iter(self._lines)
 
     def __str__(self) -> str:
-        return str(self._lines)
+        return "\n".join(str(line) for line in self._lines)
 
     @property
     def line_height(self) -> int:

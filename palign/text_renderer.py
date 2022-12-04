@@ -3,7 +3,6 @@ from typing import Optional
 from bounden import Region2, ResolvedRegion2, ResolvedVolume2
 from PIL.ImageDraw import ImageDraw
 
-from palign.config import DEFAULT_FONT_SIZE
 from palign.style import Style
 from palign.text_lines import TextLines
 from palign.types import Point, Region, ResolvedRegion
@@ -24,28 +23,29 @@ class TextRenderer:
 
     def _render_text(
         self,
-        text_lines: TextLines,
+        lines: TextLines,
         style: Style,
         target: ResolvedRegion,
     ) -> None:
-        line_height = style.font.size if style.font else DEFAULT_FONT_SIZE
-
         lines_region = target.region2(
             0 if style.horizontal is None else style.horizontal,
             0 if style.vertical is None else style.vertical,
-            text_lines.volume.width,
-            text_lines.volume.height,
+            lines.volume.width,
+            lines.volume.height,
         ).resolve()
 
-        for line_index, line in enumerate(text_lines):
+        for line_index, line in enumerate(lines):
             line_region = lines_region.region2(
                 0 if style.horizontal is None else style.horizontal,
                 0,
                 line.width,
-                line_height,
+                lines.line_height,
             ).resolve()
 
-            line_resolved = line_region + (0, line_height * line_index)
+            line_resolved = line_region + (
+                0,
+                lines.line_height * line_index,
+            )
 
             for character in line:
                 self._draw.text(
@@ -104,8 +104,7 @@ class TextRenderer:
                     width=style.border_width,
                 )
 
-        if lines is not None and resolved is not None:
-            self._render_text(lines, style, resolved)
+        self._render_text(lines, style, resolved)
 
     @classmethod
     def resolve(
