@@ -34,11 +34,11 @@ class Grid:
         def validate_key(key: tuple[int, int]) -> None:
             x = key[0]
             if x < 0 or x >= columns:
-                raise ValueError(f"No column {x} (grid has {columns})")
+                raise IndexError(f"No column {x}; grid has {columns}")
 
             y = key[1]
             if y < 0 or y >= rows:
-                raise ValueError(f"No row {y} (grid has {rows})")
+                raise IndexError(f"No row {y}; grid has {rows}")
 
         self._columns = columns
 
