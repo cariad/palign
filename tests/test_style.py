@@ -1,7 +1,7 @@
 from PIL.ImageFont import truetype
-from pytest import mark
+from pytest import mark, raises
 
-from palign import Horizontal, Style, Vertical
+from palign import Alignment, Style
 
 font_0 = truetype("tests/font/ChelseaMarket-Regular.ttf", 0)
 font_1 = truetype("tests/font/ChelseaMarket-Regular.ttf", 1)
@@ -16,17 +16,17 @@ font_1 = truetype("tests/font/ChelseaMarket-Regular.ttf", 1)
                 background=(0, 0, 0),
                 color=(1, 0, 0),
                 font=font_0,
-                horizontal=Horizontal.Center,
+                horizontal=Alignment.Center,
                 tracking=3,
-                vertical=Vertical.Bottom,
+                vertical=Alignment.Far,
             ),
             Style(
                 background=(0, 0, 0),
                 color=(1, 0, 0),
                 font=font_0,
-                horizontal=Horizontal.Center,
+                horizontal=Alignment.Center,
                 tracking=3,
-                vertical=Vertical.Bottom,
+                vertical=Alignment.Far,
             ),
         ),
         (
@@ -45,9 +45,9 @@ font_1 = truetype("tests/font/ChelseaMarket-Regular.ttf", 1)
             Style(font=font_1),
         ),
         (
-            Style(horizontal=Horizontal.Center),
-            Style(horizontal=Horizontal.Right),
-            Style(horizontal=Horizontal.Right),
+            Style(horizontal=Alignment.Center),
+            Style(horizontal=Alignment.Far),
+            Style(horizontal=Alignment.Far),
         ),
         (
             Style(tracking=1),
@@ -55,11 +55,18 @@ font_1 = truetype("tests/font/ChelseaMarket-Regular.ttf", 1)
             Style(tracking=0),
         ),
         (
-            Style(vertical=Vertical.Bottom),
-            Style(vertical=Vertical.Center),
-            Style(vertical=Vertical.Center),
+            Style(vertical=Alignment.Far),
+            Style(vertical=Alignment.Center),
+            Style(vertical=Alignment.Center),
         ),
     ],
 )
 def test_add(a: Style, b: Style, expect: Style) -> None:
     assert a + b == expect
+
+
+def test_add__not_style() -> None:
+    with raises(TypeError) as ex:
+        _ = Style() + "foo"
+
+    assert str(ex.value) == "Can merge only Style to Style"

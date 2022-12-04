@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Any, Optional, TypeVar
 
+from bounden import Alignment
 from PIL.ImageFont import FreeTypeFont
 
-from palign.enums import Horizontal, Vertical
 from palign.types import Color
 
 
@@ -80,7 +80,7 @@ class Style:
     many text operations will fail.
     """
 
-    horizontal: Optional[Horizontal] = None
+    horizontal: Optional[Alignment] = None
     """
     Horizontal alignment.
     """
@@ -90,7 +90,7 @@ class Style:
     Character tracking.
     """
 
-    vertical: Optional[Vertical] = None
+    vertical: Optional[Alignment] = None
     """
     Vertical alignment.
     """

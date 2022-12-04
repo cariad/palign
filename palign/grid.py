@@ -1,12 +1,13 @@
 from typing import Optional
 
+from bounden import Region2
 from nvalues import Volume
 from PIL.ImageDraw import ImageDraw
 
 from palign.cell import Cell
-from palign.draw_text import draw_text
-from palign.region import Region
 from palign.style import Style
+from palign.text_renderer import TextRenderer
+from palign.types import AnyRegion
 
 
 class Grid:
@@ -17,6 +18,8 @@ class Grid:
 
     `rows` is the number of rows.
 
+    `region` is the region to render the grid within.
+
     `default_style` is the optional style to apply to each cell that isn't
     given its own explicit style.
     """
@@ -25,20 +28,24 @@ class Grid:
         self,
         columns: int,
         rows: int,
-        region: Region,
+        region: AnyRegion,
         default_style: Optional[Style] = None,
     ) -> None:
         def validate_key(key: tuple[int, int]) -> None:
             x = key[0]
             if x < 0 or x >= columns:
-                raise ValueError(f"No column {x} (grid has {columns})")
+                raise IndexError(f"No column {x}; grid has {columns}")
 
             y = key[1]
             if y < 0 or y >= rows:
-                raise ValueError(f"No row {y} (grid has {rows})")
+                raise IndexError(f"No row {y}; grid has {rows}")
 
         self._columns = columns
-        self._region = region
+
+        self._region = (
+            region.resolve() if isinstance(region, Region2) else region
+        )
+
         self._rows = rows
 
         def make_cell(_: tuple[int, int]) -> Cell:
@@ -49,7 +56,7 @@ class Grid:
             key_validator=validate_key,
         )
 
-        self._default_style = default_style
+        self._default_style = default_style or Style()
 
     def __delitem__(self, key: tuple[int, int]) -> None:
         del self._cells[key]
@@ -57,14 +64,11 @@ class Grid:
     def __getitem__(self, key: tuple[int, int]) -> Cell:
         return self._cells[key]
 
-    def __setitem__(self, key: tuple[int, int], value: Cell) -> None:
-        self._cells[key] = value
-
-    def _cell_bounds(self, x: int, y: int) -> Region:
+    def _cell_bounds(self, x: int, y: int) -> Region2[float, float]:
         column_width = int(self._region.width / self._columns)
         row_height = int(self._region.height / self._rows)
 
-        return self._region.pregion(
+        return self._region.region2(
             x * column_width,
             y * row_height,
             column_width,
@@ -76,14 +80,13 @@ class Grid:
         Renders the grid.
         """
 
+        renderer = TextRenderer(draw, self._default_style)
+
         for x in range(self._columns):
             for y in range(self._rows):
-                cell_bounds = self._cell_bounds(x, y)
                 cell = self[x, y]
-
-                style = (
-                    self._default_style + cell.style
-                    if self._default_style
-                    else cell.style
+                renderer.draw_text(
+                    cell.text or "",
+                    self._cell_bounds(x, y),
+                    style=cell.style,
                 )
-                draw_text(cell.text, draw, style, cell_bounds)
