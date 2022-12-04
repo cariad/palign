@@ -27,7 +27,7 @@ renderer = Text(draw, style)
 
 The `draw` function requires the text to render and either a position or bounds to render within. You can also pass an optional [`Style`](./style.md) to merge with the base style.
 
-### Drawing at a position
+## Drawing at a position
 
 This code draws "Hello!" at the coordinates `(0, 0)`, or the top-left of the image:
 
@@ -56,7 +56,7 @@ image.save("./docs/images/text-example-0.png", "png")
   ![Hello!](images/text-example-0.png)
 </figure>
 
-### Aligning within a region
+## Aligning within a region
 
 To draw the text with some alignment within a region, define that region than pass it to `draw` instead of a position.
 
@@ -93,7 +93,7 @@ image.save("./docs/images/text-example-1.png", "png")
   ![Hello!](images/text-example-1.png)
 </figure>
 
-### Relative alignment
+## Relative alignment
 
 To align a region (and not necessarily the text within it) you can create subregions with specific positions and sizes.
 
@@ -132,7 +132,7 @@ image.save("./docs/images/text-example-2.png", "png")
   ![Hello!](images/text-example-2.png)
 </figure>
 
-### Relative sizes
+## Relative sizes
 
 The highest-level region must have explicit pixel dimensions, but subregions can have `Percent` lengths.
 
@@ -174,4 +174,42 @@ image.save("./docs/images/text-example-3.png", "png")
 
 <figure markdown>
   ![Hello!](images/text-example-3.png)
+</figure>
+
+## Changing styles within text
+
+To style a substring differently -- for example, to highlight a word in a different colour -- you can pass a sequence of strings and [`StyledText`](./style.md#styledtext-class) to `draw`:
+
+```python
+from PIL import Image, ImageDraw
+from PIL.ImageFont import truetype
+
+from palign import Alignment, Style, Text, make_image_region
+
+
+image_region = make_image_region(300, 300)
+
+image = Image.new("RGB", image_region.size)
+draw = ImageDraw.Draw(image)
+
+style = Style(
+    font=truetype("tests/font/ChelseaMarket-Regular.ttf", 42),
+    horizontal=Alignment.Center,
+    vertical=Alignment.Center,
+)
+
+renderer = Text(draw, style)
+
+world = Style(color=(255, 255, 0)).text("world")
+
+renderer.draw(
+    ("Hello ", world, "!"),
+    image_region,
+)
+
+image.save("./docs/images/text-example-4.png", "png")
+```
+
+<figure markdown>
+  ![Hello world!](images/text-example-4.png)
 </figure>

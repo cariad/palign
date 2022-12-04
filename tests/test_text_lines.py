@@ -12,4 +12,4 @@ from palign.types import GetTextLength
     ],
 )
 def test_str(source: str, expect: str, get_length: GetTextLength) -> None:
-    assert str(TextLines(source, Style(), get_length)) == expect
+    assert str(TextLines([Style().text(source)], get_length)) == expect

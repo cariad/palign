@@ -1,9 +1,9 @@
-from typing import Optional
+from typing import List, Optional, Sequence
 
 from bounden import Region2, ResolvedRegion2, ResolvedVolume2
 from PIL.ImageDraw import ImageDraw
 
-from palign.style import Style
+from palign.style import Style, StyledText
 from palign.text_lines import TextLines
 from palign.types import Point, Region, ResolvedRegion
 
@@ -34,30 +34,29 @@ class Text:
             lines.volume.height,
         ).resolve()
 
-        for line_index, line in enumerate(lines):
-            line_region = lines_region.region2(
+        next_line_top = 0
+
+        for line in lines:
+            region = lines_region.region2(
                 0 if style.horizontal is None else style.horizontal,
-                0,
+                next_line_top,
                 line.width,
-                lines.line_height,
+                line.height,
             ).resolve()
 
-            line_resolved = line_region + (
-                0,
-                lines.line_height * line_index,
-            )
+            next_line_top += line.height
 
             for character in line:
                 self._draw.text(
-                    (line_resolved.left + character.x, line_resolved.top),
+                    (region.left + character.x, region.top),
                     character.character,
-                    fill=style.color,
-                    font=style.font,
+                    fill=character.style.color,
+                    font=character.style.font,
                 )
 
     def draw(
         self,
-        text: str,
+        text: str | StyledText | Sequence[str | StyledText],
         bounds: Region2[float, float] | ResolvedRegion | Point,
         style: Optional[Style] = None,
     ) -> None:
@@ -66,7 +65,20 @@ class Text:
         """
 
         style = self._style if style is None else self._style + style
-        lines = TextLines(text, style, self._draw.textlength)
+
+        many_fragments: List[StyledText] = []
+
+        if isinstance(text, (str, StyledText)):
+            text = [text]
+
+        for t in text:
+            if isinstance(t, StyledText):
+                t.rebase_style(style)
+                many_fragments.append(t)
+            else:
+                many_fragments.append(style.text(t))
+
+        lines = TextLines(many_fragments, self._draw.textlength)
 
         resolved = self.resolve(bounds, lines.volume)
 
