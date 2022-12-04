@@ -79,12 +79,12 @@ class Grid:
         Draws the grid.
         """
 
-        renderer = Text(draw, self._default_style)
+        text = Text(draw, self._default_style)
 
         for x in range(self._columns):
             for y in range(self._rows):
                 cell = self[x, y]
-                renderer.draw_text(
+                text.draw(
                     cell.text or "",
                     self._cell_bounds(x, y),
                     style=cell.style,

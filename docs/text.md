@@ -25,7 +25,7 @@ renderer = Text(draw, style)
 
 ## Drawing text
 
-The `draw_text` function requires the text to render and either a position or bounds to render within. You can also pass an optional [`Style`](./style.md) to merge with the base style.
+The `draw` function requires the text to render and either a position or bounds to render within. You can also pass an optional [`Style`](./style.md) to merge with the base style.
 
 ### Drawing at a position
 
@@ -47,7 +47,7 @@ style = Style(
 
 renderer = Text(draw, style)
 
-renderer.draw_text("Hello!", (0, 0))
+renderer.draw("Hello!", (0, 0))
 
 image.save("./docs/images/text-example-0.png", "png")
 ```
@@ -58,7 +58,7 @@ image.save("./docs/images/text-example-0.png", "png")
 
 ### Aligning within a region
 
-To draw the text with some alignment within a region, define that region than pass it to `draw_text` instead of a position.
+To draw the text with some alignment within a region, define that region than pass it to `draw` instead of a position.
 
 For example, this code creates a region at the top-left of the image, with width and height of 200 pixels, then centers the text within it.
 
@@ -84,7 +84,7 @@ region = Region.new(0, 0, 200, 200)
 
 renderer = Text(draw, style)
 
-renderer.draw_text("Hello!", region)
+renderer.draw("Hello!", region)
 
 image.save("./docs/images/text-example-1.png", "png")
 ```
@@ -123,7 +123,7 @@ region = image_region.region2(Alignment.Far, Alignment.Far, 200, 200)
 
 renderer = Text(draw, style)
 
-renderer.draw_text("Hello!", region)
+renderer.draw("Hello!", region)
 
 image.save("./docs/images/text-example-2.png", "png")
 ```
@@ -167,7 +167,7 @@ region = image_region.region2(
 
 renderer = Text(draw, style)
 
-renderer.draw_text("Hello!", region)
+renderer.draw("Hello!", region)
 
 image.save("./docs/images/text-example-3.png", "png")
 ```

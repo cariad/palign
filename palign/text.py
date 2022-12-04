@@ -55,7 +55,7 @@ class Text:
                     font=style.font,
                 )
 
-    def draw_text(
+    def draw(
         self,
         text: str,
         bounds: Region2[float, float] | ResolvedRegion | Point,

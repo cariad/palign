@@ -84,7 +84,7 @@ def test_example_0() -> None:
     renderer = Text(draw, style)
 
     # Draw "Hello world!" at (0, 0):
-    renderer.draw_text("Hello world!", (0, 0))
+    renderer.draw("Hello world!", (0, 0))
 
     # Same the image via Pillow:
     image.save("./docs/images/example-0.png", "png")
@@ -102,43 +102,43 @@ def test_example_1() -> None:
     renderer = Text(draw, style)
 
     # Pass in a style to merge into the renderer's base style:
-    renderer.draw_text(
+    renderer.draw(
         "Red!",
         (0, 0),
         style=Style(color=(255, 0, 0)),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "More tracking!",
         (0, 60),
         style=Style(tracking=2),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "Less tracking!",
         (0, 120),
         style=Style(tracking=-5),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "Highlight!",
         (0, 180),
         style=Style(background=(100, 255, 255)),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "Rounded highlight!",
         (0, 240),
         style=Style(background=(100, 255, 255), border_radius=20),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "Border!",
         (0, 300),
         style=Style(border_color=(255, 0, 0), border_width=3),
     )
 
-    renderer.draw_text(
+    renderer.draw(
         "Rounded border!",
         (0, 360),
         style=Style(
@@ -202,7 +202,7 @@ def test_example_2() -> None:
                     vertical_name = "Bottom"
 
             text = f"{vertical_name} {horizontal_name}"
-            renderer.draw_text(text, text_region, style=alignment)
+            renderer.draw(text, text_region, style=alignment)
 
             # Translate the region down by (text_region.height + 10) pixels for
             # the next block.
