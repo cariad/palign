@@ -1,5 +1,7 @@
 from typing import Iterator
 
+from bounden import ResolvedVolume2
+
 from palign.config import DEFAULT_FONT_SIZE
 from palign.style import Style
 from palign.text_line import TextLine
@@ -31,19 +33,16 @@ class TextLines:
             int(style.font.size) if style.font else DEFAULT_FONT_SIZE
         )
 
+        self._volume = ResolvedVolume2.new(
+            max(line.width for line in self._lines),
+            self._line_height * len(self._lines),
+        )
+
     def __iter__(self) -> Iterator[TextLine]:
         return iter(self._lines)
 
     def __str__(self) -> str:
         return str(self._lines)
-
-    @property
-    def height(self) -> int:
-        """
-        Height of all lines.
-        """
-
-        return self._line_height * len(self._lines)
 
     @property
     def line_height(self) -> int:
@@ -54,9 +53,9 @@ class TextLines:
         return self._line_height
 
     @property
-    def width(self) -> float:
+    def volume(self) -> ResolvedVolume2:
         """
-        Width of the the longest line.
+        Volume.
         """
 
-        return max(line.width for line in self._lines)
+        return self._volume

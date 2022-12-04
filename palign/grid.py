@@ -87,6 +87,9 @@ class Grid:
 
         for x in range(self._columns):
             for y in range(self._rows):
-                cell_bounds = self._cell_bounds(x, y)
                 cell = self[x, y]
-                renderer.draw_text(cell.text, cell_bounds, style=cell.style)
+                renderer.draw_text(
+                    cell.text or "",
+                    self._cell_bounds(x, y),
+                    style=cell.style,
+                )
